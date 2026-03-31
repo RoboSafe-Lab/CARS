@@ -172,7 +172,7 @@
 <!-- ═══════════════════════════════════ HERO ═══════════════════════════════════ -->
 <section class="hero-section">
   <div class="container has-text-centered">
-    <div class="venue-tag">IEEE Transactions 2025</div>
+    <!-- venue tag removed -->
     <h1 class="paper-title">
       <span class="highlight">Context-Aware</span> and <span class="highlight">Responsibility-Sensitive</span><br/>
       Adversarial Scenario Generation for Autonomous Vehicles
@@ -196,7 +196,7 @@
       <a class="proj-btn btn-paper btn-disabled" href="#">
         <i class="fas fa-file-alt"></i> Paper
       </a>
-      <a class="proj-btn btn-code" href="https://github.com/RoboSafe-Lab/CARS" target="_blank">
+      <a class="proj-btn btn-code" href="https://github.com/RoboSafe-Lab/GMMPPO" target="_blank">
         <i class="fab fa-github"></i> Code
       </a>
       <a class="proj-btn btn-arxiv btn-disabled" href="#">
@@ -291,7 +291,6 @@
             <source src="static/videos/scene-0297_0021_t_10.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
-            <div><span class="scene-badge">scene-0297 · t=10</span></div>
             <strong>(a) Rear-end approach</strong><br/>
             <small>
               <span class="tag-adv">Adversary</span> closes from behind;
@@ -309,7 +308,6 @@
             <source src="static/videos/scene-0297_0021_t_12.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
-            <div><span class="scene-badge">scene-0297 · t=12</span></div>
             <strong>(b) Adversary switch event</strong><br/>
             <small>
               The <span class="tag-adv">adversary role</span> transfers mid-episode to a different agent.
@@ -326,7 +324,6 @@
             <source src="static/videos/scene-0297_0021_t_18.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
-            <div><span class="scene-badge">scene-0297 · t=18</span></div>
             <strong>(c) Lateral cut-in</strong><br/>
             <small>
               <span class="tag-adv">Adversary</span> merges laterally into
@@ -350,11 +347,11 @@
     <div class="columns is-centered" style="margin-bottom: 48px;">
       <div class="column is-11">
         <figure>
-          <img src="static/images/scene0297_three.png" alt="Three scenarios static view" class="method-figure" />
+          <img src="static/images/scene0297_adv_switch.png" alt="Context-aware adversary switching" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Static trajectory overlay for scenarios (a)–(c).</strong>
-            Coloured front-line markers show where each controller (FSM / EB / IDM)
-            would have stopped the target; dashed blue box is the target's recorded final position.
+            <strong>Context-aware adversary switching.</strong>
+            The adversary role dynamically transfers between agents mid-episode based on the context-aware selection module,
+            maintaining a coherent and effective threat to the target vehicle.
           </p>
         </figure>
       </div>
@@ -363,11 +360,12 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/failure_modes.png" alt="Failure modes across episodes" class="method-figure" />
+          <img src="static/images/failure_modes.png" alt="Roller-coaster re-simulation validity outcomes" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Failure mode gallery.</strong>
-            Representative unpreventable collision scenarios across the 408-episode test set,
-            visualised with nuScenes map background.
+            <strong>Roller-coaster re-simulation.</strong>
+            Illustrating the four validity outcomes across representative nuScenes episodes.
+            Each controller (FSM / EB / IDM) re-simulates the target along its original path with braking only,
+            determining whether the collision is the responsibility of the AD system under test.
           </p>
         </figure>
       </div>
