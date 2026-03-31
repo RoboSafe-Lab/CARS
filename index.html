@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARS: Context-Aware and Responsibility-Sensitive Adversarial Scenario Generation</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* ── Typography ── */
+    body { font-family: 'Inter', sans-serif; color: #1a1a2e; background: #ffffff; }
+
+    /* ── Hero ── */
+    .hero-section {
+      background: linear-gradient(135deg, #0f0c29 0%, #1a1a4e 50%, #24243e 100%);
+      padding: 80px 0 60px;
+      color: white;
+    }
+    .paper-title {
+      font-size: 2.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #ffffff;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .paper-title .highlight { color: #7ecfff; }
+    .venue-tag {
+      display: inline-block;
+      background: rgba(126,207,255,0.18);
+      border: 1px solid rgba(126,207,255,0.4);
+      color: #7ecfff;
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 22px;
+    }
+    .author-list { font-size: 1.05rem; color: #cdd9f5; margin: 18px 0 8px; }
+    .author-list a { color: #7ecfff; text-decoration: none; }
+    .author-list a:hover { text-decoration: underline; }
+    .affil-list { font-size: 0.88rem; color: #9aafc8; margin-bottom: 28px; }
+
+    /* ── Buttons ── */
+    .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+    .proj-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: 8px; font-weight: 600;
+      font-size: 0.92rem; text-decoration: none; transition: all 0.2s;
+      border: 2px solid;
+    }
+    .btn-paper  { background: #7ecfff; color: #0f1e3d; border-color: #7ecfff; }
+    .btn-code   { background: transparent; color: #7ecfff; border-color: #7ecfff; }
+    .btn-arxiv  { background: transparent; color: #ffb347; border-color: #ffb347; }
+    .proj-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-disabled { opacity: 0.45; pointer-events: none; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.7rem; font-weight: 700; text-align: center;
+      margin-bottom: 8px; color: #1a1a2e;
+    }
+    .section-subtitle {
+      text-align: center; color: #666; font-size: 0.95rem; margin-bottom: 40px;
+    }
+    .divider { width: 56px; height: 4px; background: #7ecfff; border-radius: 2px; margin: 0 auto 40px; }
+
+    /* ── Abstract ── */
+    .abstract-box {
+      background: #f4f7fc; border-left: 4px solid #7ecfff;
+      border-radius: 0 12px 12px 0; padding: 28px 32px;
+      font-size: 0.97rem; line-height: 1.85; color: #2c3e50;
+      max-width: 900px; margin: 0 auto;
+    }
+    .abstract-box strong { color: #1a1a2e; }
+
+    /* ── Method figure ── */
+    .method-figure { border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); width: 100%; }
+    .figure-caption {
+      text-align: center; font-size: 0.87rem; color: #666;
+      margin-top: 12px; max-width: 820px; margin-left: auto; margin-right: auto;
+    }
+
+    /* ── Video grid ── */
+    .video-card {
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+      background: #0d0d1a;
+    }
+    .video-card video { width: 100%; display: block; }
+    .video-label {
+      background: #0d0d1a; color: #e0e0e0;
+      padding: 12px 16px; font-size: 0.88rem; font-weight: 500;
+    }
+    .video-label .tag-adv { color: #E53935; font-weight: 700; }
+    .video-label .tag-tgt { color: #1E88E5; font-weight: 700; }
+    .video-label .tag-other { color: #78909C; font-weight: 700; }
+    .scene-badge {
+      display: inline-block; background: rgba(126,207,255,0.15);
+      border: 1px solid rgba(126,207,255,0.3); color: #7ecfff;
+      border-radius: 6px; padding: 2px 10px; font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;
+    }
+
+    /* ── Legend bar ── */
+    .legend-bar {
+      display: flex; gap: 24px; justify-content: center; align-items: center;
+      background: #f4f7fc; border-radius: 10px; padding: 12px 24px;
+      margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.88rem; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── Results table ── */
+    .results-table { border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+    .results-table table { margin: 0; }
+    .results-table thead { background: #1a1a2e; color: white; }
+    .results-table thead th { color: white !important; border: none !important; font-weight: 600; padding: 14px 18px; }
+    .results-table tbody tr:hover { background: #f0f5ff; }
+    .results-table td, .results-table th { vertical-align: middle !important; padding: 12px 18px !important; }
+    .results-table .best { font-weight: 700; color: #1565C0; }
+    .model-name { font-weight: 600; }
+    .model-ours { color: #1a1a2e; }
+    .model-ours td { background: #eef5ff; }
+
+    /* ── BibTeX ── */
+    .bibtex-box {
+      background: #0d0d1a; border-radius: 12px; padding: 24px 28px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+      color: #aecbfa; line-height: 1.75; white-space: pre;
+      overflow-x: auto; position: relative;
+    }
+    .copy-btn {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(126,207,255,0.15); border: 1px solid rgba(126,207,255,0.3);
+      color: #7ecfff; border-radius: 6px; padding: 4px 12px;
+      font-size: 0.78rem; cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .copy-btn:hover { background: rgba(126,207,255,0.3); }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: #0d0d1a; color: #7a8ba6;
+      text-align: center; padding: 28px; font-size: 0.85rem;
+    }
+    .site-footer a { color: #7ecfff; text-decoration: none; }
+
+    /* ── Sections spacing ── */
+    .content-section { padding: 72px 0; }
+    .content-section.bg-light { background: #f8faff; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .paper-title { font-size: 1.45rem; }
+      .hero-section { padding: 50px 0 40px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════ HERO ═══════════════════════════════════ -->
+<section class="hero-section">
+  <div class="container has-text-centered">
+    <div class="venue-tag">IEEE Transactions 2025</div>
+    <h1 class="paper-title">
+      <span class="highlight">Context-Aware</span> and <span class="highlight">Responsibility-Sensitive</span><br/>
+      Adversarial Scenario Generation for Autonomous Vehicles
+    </h1>
+
+    <p class="author-list" style="margin-top:24px;">
+      Yizhuo Xiao&nbsp;&nbsp;·&nbsp;&nbsp;
+      Haotian Yan&nbsp;&nbsp;·&nbsp;&nbsp;
+      Zhongpan Zhu&nbsp;&nbsp;·&nbsp;&nbsp;
+      Ying Wang&nbsp;&nbsp;·&nbsp;&nbsp;
+      Mustafa Suphi Erden&nbsp;&nbsp;·&nbsp;&nbsp;
+      Cheng Wang
+    </p>
+
+    <p class="affil-list">
+      Heriot-Watt University &nbsp;·&nbsp; Tongji University &nbsp;·&nbsp;
+      University of Shanghai for Science and Technology
+    </p>
+
+    <div class="btn-group">
+      <a class="proj-btn btn-paper btn-disabled" href="#">
+        <i class="fas fa-file-alt"></i> Paper
+      </a>
+      <a class="proj-btn btn-code" href="https://github.com/RoboSafe-Lab/CARS" target="_blank">
+        <i class="fab fa-github"></i> Code
+      </a>
+      <a class="proj-btn btn-arxiv btn-disabled" href="#">
+        <i class="fas fa-archive"></i> arXiv
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ ABSTRACT ═══════════════════════════════ -->
+<section class="content-section">
+  <div class="container">
+    <h2 class="section-title">Abstract</h2>
+    <div class="divider"></div>
+    <div class="abstract-box">
+      Existing closed-loop scenario generation methods for autonomous driving (AD) validation often struggle to jointly preserve
+      <strong>kinematic realism</strong>, <strong>behavioral diversity</strong>, and <strong>meaningful safety criticality</strong>.
+      To address this challenge, we propose <strong>CARS</strong>,
+      a two-stage framework for adversarial scenario synthesis.
+      CARS augments the diffusion policy with a <strong>Gaussian mixture output head</strong> to capture diverse driving intentions,
+      and further refines the policy through <strong>reinforcement learning</strong> (PPO) to induce safety-critical interactions.
+      To improve the consistency of threat construction, we introduce a <strong>context-aware adversarial-agent selection module</strong>
+      with temporal confirmation for stable adversary assignment.
+      To ensure evaluation relevance, we further employ a <strong>careful and competent driver model (CCDM)</strong>,
+      instantiated with a Fuzzy Safety Model (FSM, UN R157), to determine whether the generated collisions are the
+      <em>responsibility</em> of the AD system under test.
+      Extensive experiments on the nuScenes dataset demonstrate the effectiveness of CARS in stress-testing AD systems.
+      CARS generates <strong>408 collision scenarios</strong>, and CCDM verification confirms that
+      <strong>403 of them are the responsibility of the target AD system</strong>,
+      where a competent driver could have avoided the collision yet the target failed to do so.
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ METHOD ═════════════════════════════════ -->
+<section class="content-section bg-light">
+  <div class="container">
+    <h2 class="section-title">Method Overview</h2>
+    <div class="divider"></div>
+
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <figure>
+          <img src="static/images/Fig1.png" alt="CARS Framework Overview" class="method-figure" />
+          <p class="figure-caption" style="margin-top:14px;">
+            <strong>CARS Pipeline.</strong>
+            The adversary (<em>adv</em>) is controlled by the CARS policy, which combines a diffusion backbone
+            with a Gaussian mixture output head. PPO fine-tunes the policy toward safety-critical interactions
+            while preserving multi-modal kinematic realism. A context-aware selection module identifies the
+            most threatening adversary; a CCDM filter retains only scenarios attributable to the target (<em>tgt</em>).
+          </p>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ VIDEOS ═════════════════════════════════ -->
+<section class="content-section">
+  <div class="container">
+    <h2 class="section-title">Demo Scenarios</h2>
+    <p class="section-subtitle">
+      Rollout episodes replayed frame-by-frame from recorded HDF5 trajectories on the nuScenes Boston-Seaport map.
+      All agents move exactly as recorded — no controller simulation.
+    </p>
+    <div class="divider"></div>
+
+    <!-- Legend -->
+    <div class="legend-bar">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#E53935;"></div>
+        <span>Adversary (CARS)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#1E88E5;"></div>
+        <span>Target (AD system under test)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#78909C;"></div>
+        <span>Other traffic agents</span>
+      </div>
+    </div>
+
+    <div class="columns is-multiline">
+      <!-- Video (a) -->
+      <div class="column is-4">
+        <div class="video-card">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/scene-0297_0021_t_10.mp4" type="video/mp4" />
+          </video>
+          <div class="video-label">
+            <div><span class="scene-badge">scene-0297 · t=10</span></div>
+            <strong>(a) Rear-end approach</strong><br/>
+            <small>
+              <span class="tag-adv">Adversary</span> closes from behind;
+              <span class="tag-tgt">target</span> fails to brake in time.
+              FSM: <em>Hard</em> criticality.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video (b) -->
+      <div class="column is-4">
+        <div class="video-card">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/scene-0297_0021_t_12.mp4" type="video/mp4" />
+          </video>
+          <div class="video-label">
+            <div><span class="scene-badge">scene-0297 · t=12</span></div>
+            <strong>(b) Adversary switch event</strong><br/>
+            <small>
+              The <span class="tag-adv">adversary role</span> transfers mid-episode to a different agent.
+              Context-aware selection maintains a coherent threat.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video (c) -->
+      <div class="column is-4">
+        <div class="video-card">
+          <video autoplay loop muted playsinline>
+            <source src="static/videos/scene-0297_0021_t_18.mp4" type="video/mp4" />
+          </video>
+          <div class="video-label">
+            <div><span class="scene-badge">scene-0297 · t=18</span></div>
+            <strong>(c) Lateral cut-in</strong><br/>
+            <small>
+              <span class="tag-adv">Adversary</span> merges laterally into
+              <span class="tag-tgt">target</span>'s lane at high closing speed.
+              FSM: <em>Hard</em> criticality.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ QUALITATIVE ════════════════════════════ -->
+<section class="content-section bg-light">
+  <div class="container">
+    <h2 class="section-title">Qualitative Results</h2>
+    <div class="divider"></div>
+
+    <div class="columns is-centered" style="margin-bottom: 48px;">
+      <div class="column is-11">
+        <figure>
+          <img src="static/images/scene0297_three.png" alt="Three scenarios static view" class="method-figure" />
+          <p class="figure-caption" style="margin-top:14px;">
+            <strong>Static trajectory overlay for scenarios (a)–(c).</strong>
+            Coloured front-line markers show where each controller (FSM / EB / IDM)
+            would have stopped the target; dashed blue box is the target's recorded final position.
+          </p>
+        </figure>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-11">
+        <figure>
+          <img src="static/images/failure_modes.png" alt="Failure modes across episodes" class="method-figure" />
+          <p class="figure-caption" style="margin-top:14px;">
+            <strong>Failure mode gallery.</strong>
+            Representative unpreventable collision scenarios across the 408-episode test set,
+            visualised with nuScenes map background.
+          </p>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ COLLISION ANALYSIS ═════════════════════ -->
+<section class="content-section">
+  <div class="container">
+    <h2 class="section-title">Collision Analysis</h2>
+    <p class="section-subtitle">
+      Statistical characterisation of collision geometry and kinematics across all 408 scenarios.
+    </p>
+    <div class="divider"></div>
+
+    <div class="columns is-centered">
+      <div class="column is-11">
+        <figure>
+          <img src="static/images/collision_analysis.png" alt="Collision analysis plots" class="method-figure"
+               style="background:white; padding:12px; border-radius:12px;" />
+          <p class="figure-caption" style="margin-top:14px;">
+            <strong>(a)</strong> Adversary position in target reference frame at collision — coloured by FSM criticality.
+            <strong>(b)</strong> Adversary speed KDE at collision instant.
+            <strong>(c)</strong> Longitudinal closing speed KDE; positive = adversary approaching.
+          </p>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ QUANTITATIVE ══════════════════════════ -->
+<section class="content-section bg-light">
+  <div class="container">
+    <h2 class="section-title">Quantitative Results</h2>
+    <p class="section-subtitle">
+      Comparison of CARS against ablation baselines across key safety-critical metrics.
+    </p>
+    <div class="divider"></div>
+
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <div class="results-table">
+          <table class="table is-fullwidth is-hoverable">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Episodes</th>
+                <th>CR (%)</th>
+                <th>Hard% ↑</th>
+                <th>TTC<sub>min</sub> median (s) ↓</th>
+                <th>FSM preventable (%)</th>
+                <th>Speed@col (m/s)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="model-ours">
+                <td class="model-name model-ours">CARS K=8 <span style="background:#e3f0ff;color:#1565c0;border-radius:4px;padding:2px 6px;font-size:0.78rem;">Ours</span></td>
+                <td>408</td>
+                <td class="best">100.0</td>
+                <td class="best">52.7</td>
+                <td class="best">1.47</td>
+                <td>98.8</td>
+                <td>1.81</td>
+              </tr>
+              <tr>
+                <td class="model-name">GMD K=1 target</td>
+                <td>180</td>
+                <td>100.0</td>
+                <td>38.3</td>
+                <td>1.52</td>
+                <td>98.9</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="model-name">CARS + CTG target</td>
+                <td>315</td>
+                <td>97.5</td>
+                <td>49.5</td>
+                <td>—</td>
+                <td>—</td>
+                <td>7.19</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.83rem;color:#888;margin-top:10px;text-align:center;">
+          CR = Collision Rate · Hard% = fraction of FSM-Hard scenarios · ↑/↓ = higher/lower is better
+        </p>
+      </div>
+    </div>
+
+    <!-- CCDM validity highlight -->
+    <div class="columns is-centered" style="margin-top:40px;">
+      <div class="column is-10">
+        <div style="display:flex;gap:24px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#1a1a4e,#0f0c29);color:white;
+                      border-radius:14px;padding:28px;text-align:center;">
+            <div style="font-size:2.6rem;font-weight:800;color:#7ecfff;">403/408</div>
+            <div style="font-size:0.88rem;color:#cdd9f5;margin-top:6px;">
+              Scenarios responsibility-<br/>attributable to target AD
+            </div>
+          </div>
+          <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#1a3a1a,#0c2010);color:white;
+                      border-radius:14px;padding:28px;text-align:center;">
+            <div style="font-size:2.6rem;font-weight:800;color:#66bb6a;">52.7%</div>
+            <div style="font-size:0.88rem;color:#b2dfdb;margin-top:6px;">
+              Hard criticality<br/>(FSM-CFS ≥ 0.9)
+            </div>
+          </div>
+          <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#3a1a00,#200c00);color:white;
+                      border-radius:14px;padding:28px;text-align:center;">
+            <div style="font-size:2.6rem;font-weight:800;color:#ffb347;">97.8%</div>
+            <div style="font-size:0.88rem;color:#ffe0b2;margin-top:6px;">
+              Adversary selection<br/>top-3 accuracy
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ BIBTEX ═════════════════════════════════ -->
+<section class="content-section">
+  <div class="container">
+    <h2 class="section-title">Citation</h2>
+    <div class="divider"></div>
+    <div class="columns is-centered">
+      <div class="column is-9">
+        <div class="bibtex-box" id="bibtex">
+<button class="copy-btn" onclick="copyBibtex()"><i class="fas fa-copy"></i> Copy</button>@article{xiao2025cars,
+  title     = {Context-Aware and Responsibility-Sensitive Adversarial
+               Scenario Generation for Autonomous Vehicles},
+  author    = {Xiao, Yizhuo and Yan, Haotian and Zhu, Zhongpan and
+               Wang, Ying and Erden, Mustafa Suphi and Wang, Cheng},
+  journal   = {IEEE Transactions},
+  year      = {2025},
+  note      = {\url{https://robosafe-lab.github.io/CARS}}
+}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════ FOOTER ═════════════════════════════════ -->
+<footer class="site-footer">
+  <p>
+    CARS Project &nbsp;·&nbsp;
+    Heriot-Watt University RoboSafe Lab &nbsp;·&nbsp;
+    <a href="https://github.com/RoboSafe-Lab/CARS">GitHub</a>
+  </p>
+  <p style="margin-top:6px;font-size:0.80rem;color:#4a5a6a;">
+    Website template inspired by <a href="https://nerfies.github.io">Nerfies</a>.
+    Funded by UKRI Horizon Europe guarantee [EP/Z533464/1].
+  </p>
+</footer>
+
+<script>
+  function copyBibtex() {
+    const box = document.getElementById('bibtex');
+    const text = box.innerText.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = box.querySelector('.copy-btn');
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
