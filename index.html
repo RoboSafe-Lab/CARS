@@ -214,21 +214,11 @@
     <h2 class="section-title">Abstract</h2>
     <div class="divider"></div>
     <div class="abstract-box">
-      Existing closed-loop scenario generation methods for autonomous driving (AD) validation often struggle to jointly preserve
-      <strong>kinematic realism</strong>, <strong>behavioral diversity</strong>, and <strong>meaningful safety criticality</strong>.
-      To address this challenge, we propose <strong>CARS</strong>,
-      a two-stage framework for adversarial scenario synthesis.
-      CARS augments the diffusion policy with a <strong>Gaussian mixture output head</strong> to capture diverse driving intentions,
-      and further refines the policy through <strong>reinforcement learning</strong> (PPO) to induce safety-critical interactions.
-      To improve the consistency of threat construction, we introduce a <strong>context-aware adversarial-agent selection module</strong>
-      with temporal confirmation for stable adversary assignment.
-      To ensure evaluation relevance, we further employ a <strong>careful and competent driver model (CCDM)</strong>,
-      instantiated with a Fuzzy Safety Model (FSM, UN R157), to determine whether the generated collisions are the
-      <em>responsibility</em> of the AD system under test.
-      Extensive experiments on the nuScenes dataset demonstrate the effectiveness of CARS in stress-testing AD systems.
-      CARS generates <strong>408 collision scenarios</strong>, and CCDM verification confirms that
-      <strong>403 of them are the responsibility of the target AD system</strong>,
-      where a competent driver could have avoided the collision yet the target failed to do so.
+      Adversarial scenario generation is critical for validating autonomous driving (AD) systems, yet current methods face intertwined challenges: selecting the appropriate adversary in complex multi-agent traffic, generating multi-modal attack behaviors, and determining whether a resulting collision is genuinely the AD system's fault.
+      <br><br>
+      This paper presents a <strong>Context-Aware and Responsibility-Sensitive (CARS)</strong> framework for adversarial scenario generation. A <strong>Gaussian mixture diffusion model</strong> replaces the conventional single-Gaussian denoising head with a multi-component mixture output, enabling the adversarial policy to commit to distinct attack modes rather than averaging over them. The model is pre-trained on naturalistic driving data and then refined via <strong>reinforcement learning</strong> in closed-loop simulation to induce safety-critical interactions. A <strong>context-aware selection module</strong> dynamically identifies the most threatening agent at each timestep based on relative geometry and kinematics to the ego agent. A <strong>careful and competent driver model (CCDM)</strong> provides post-hoc responsibility attribution, retaining only scenarios where the collision is attributable to the AD system under test.
+      <br><br>
+      Experiments on the nuScenes dataset validate the CARS framework across <strong>408 collision scenarios</strong>. The CCDM confirms <strong>403 of these</strong> as the AD system's responsibility. The Gaussian mixture head increases the proportion of high-severity scenarios by <strong>14.4%</strong> over a single-Gaussian baseline, and the learned adversarial policy transfers zero-shot to a different AD system.
     </div>
   </div>
 </section>
