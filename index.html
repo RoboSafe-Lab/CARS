@@ -288,7 +288,7 @@
       <!-- Video (a) -->
       <div class="column is-4">
         <div class="video-card">
-          <video autoplay loop muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
+          <video autoplay muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
             <source src="static/videos/scene-0297_0021_t_10.mp4?v=4" type="video/mp4" />
           </video>
           <div class="video-label">
@@ -305,7 +305,7 @@
       <!-- Video (b) -->
       <div class="column is-4">
         <div class="video-card">
-          <video autoplay loop muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
+          <video autoplay muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
             <source src="static/videos/scene-1023_0021_t_2.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
@@ -321,7 +321,7 @@
       <!-- Video (c) -->
       <div class="column is-4">
         <div class="video-card">
-          <video autoplay loop muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
+          <video autoplay muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
             <source src="static/videos/scene-0297_0021_t_18.mp4?v=4" type="video/mp4" />
           </video>
           <div class="video-label">
@@ -341,7 +341,7 @@
       <!-- Video (d) -->
       <div class="column is-4">
         <div class="video-card">
-          <video autoplay loop muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
+          <video autoplay muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
             <source src="static/videos/scene-0877_0021_t_6.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
@@ -358,7 +358,7 @@
       <!-- Video (e) -->
       <div class="column is-4">
         <div class="video-card">
-          <video autoplay loop muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
+          <video autoplay muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
             <source src="static/videos/scene-0895_0021_t_4.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
@@ -374,7 +374,7 @@
       <!-- Video (f) -->
       <div class="column is-4">
         <div class="video-card">
-          <video autoplay loop muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
+          <video autoplay muted playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="auto">
             <source src="static/videos/scene-0979_0021_t_2.mp4" type="video/mp4" />
           </video>
           <div class="video-label">
@@ -589,6 +589,39 @@
       setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
     });
   }
+
+  // 1. Pause 1s then replay; 2. Mobile WeChat fallback
+  document.addEventListener('DOMContentLoaded', function() {
+    var videos = document.querySelectorAll('video');
+
+    videos.forEach(function(v) {
+      // Pause 1s at end, then restart
+      v.addEventListener('ended', function() {
+        var self = this;
+        setTimeout(function() {
+          self.currentTime = 0;
+          self.play();
+        }, 1000);
+      });
+
+      // Mobile WeChat: autoplay often blocked, try play on first touch
+      v.play().catch(function() {});
+    });
+
+    // Fallback: play all videos on first user interaction (tap/scroll)
+    var played = false;
+    function tryPlay() {
+      if (played) return;
+      played = true;
+      videos.forEach(function(v) { v.play().catch(function() {}); });
+      document.removeEventListener('touchstart', tryPlay);
+      document.removeEventListener('click', tryPlay);
+      document.removeEventListener('scroll', tryPlay);
+    }
+    document.addEventListener('touchstart', tryPlay, {passive: true});
+    document.addEventListener('click', tryPlay);
+    document.addEventListener('scroll', tryPlay, {passive: true});
+  });
 </script>
 
 </body>
