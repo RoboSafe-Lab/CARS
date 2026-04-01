@@ -216,9 +216,9 @@
     <div class="abstract-box">
       Adversarial scenario generation is critical for validating autonomous driving (AD) systems, yet current methods face intertwined challenges: selecting the appropriate adversary in complex multi-agent traffic, generating multi-modal attack behaviors, and determining whether a resulting collision is genuinely the AD system's fault.
       <br><br>
-      This paper presents a Context-Aware and Responsibility-Sensitive (<strong>CARS</strong>) framework for adversarial scenario generation. A Gaussian mixture diffusion model replaces the conventional single-Gaussian denoising head with a multi-component mixture output, enabling the adversarial policy to commit to distinct attack modes rather than averaging over them. The model is pre-trained on naturalistic driving data and then refined via reinforcement learning in closed-loop simulation to induce safety-critical interactions. A context-aware selection module dynamically identifies the most threatening agent at each timestep based on relative geometry and kinematics to the ego agent. A careful and competent driver model (CCDM) provides post-hoc responsibility attribution, retaining only scenarios where the collision is attributable to the AD system under test.
+      This paper presents a Context-Aware and Responsibility-Sensitive (<strong>CARS</strong>) framework for adversarial scenario generation. A <strong>Gaussian mixture diffusion model</strong> replaces the conventional single-Gaussian denoising head with a multi-component mixture output, enabling the adversarial policy to commit to distinct attack modes rather than averaging over them. The model is pre-trained on naturalistic driving data and then refined via reinforcement learning in closed-loop simulation to induce safety-critical interactions. A <strong>context-aware selection module</strong> dynamically identifies the most threatening agent at each timestep based on relative geometry and kinematics to the ego agent. A <strong>careful and competent driver model (CCDM)</strong> provides post-hoc responsibility attribution, retaining only scenarios where the collision is attributable to the AD system under test.
       <br><br>
-      Experiments on the nuScenes dataset validate the CARS framework across 408 collision scenarios. The CCDM confirms 403 of these as the AD system's responsibility. The Gaussian mixture head increases the proportion of high-severity scenarios by 14.4% over a single-Gaussian baseline, and the learned adversarial policy transfers zero-shot to a different AD system.
+      Experiments on the nuScenes dataset validate the CARS framework across <strong>408 collision scenarios</strong>. The CCDM confirms <strong>403</strong> of these as the AD system's responsibility. The Gaussian mixture head increases the proportion of high-severity scenarios by <strong>14.4%</strong> over a single-Gaussian baseline, and the learned adversarial policy transfers zero-shot to a different AD system.
     </div>
   </div>
 </section>
@@ -484,7 +484,7 @@
                 <td>180</td>
                 <td>38.3</td>
                 <td>1.51</td>
-                <td>—</td>
+                <td>10.0</td>
                 <td>1.1</td>
                 <td>98.9</td>
               </tr>
