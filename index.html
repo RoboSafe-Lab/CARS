@@ -264,7 +264,7 @@
     <h2 class="section-title">Demo Scenarios</h2>
     <p class="section-subtitle">
       Rollout episodes replayed frame-by-frame from recorded HDF5 trajectories on the nuScenes Boston-Seaport map.
-      All agents move exactly as recorded — no controller simulation.
+      All agents move exactly as recorded
     </p>
     <div class="divider"></div>
 
@@ -415,10 +415,12 @@
         <figure>
           <img src="static/images/failure_modes.png" alt="Roller-coaster re-simulation validity outcomes" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Roller-coaster re-simulation.</strong>
-            Illustrating the four validity outcomes across representative nuScenes episodes.
-            Each controller (FSM / EB / IDM) re-simulates the target along its original path with braking only,
-            determining whether the collision is the responsibility of the AD system under test.
+            <strong>Re-simulation using CCDMs for responsibility attribution across representative generated adversarial scenarios.</strong>
+            Each panel shows the stop positions of the three driver models (FSM / EB / IDM) re-simulating the target along its original path.
+            (a) All three driver models stop before the adversary: fully preventable.
+            (b) FSM alone fails: FSM-unpreventable.
+            (c) EB reacts too late: EB-unpreventable.
+            (d) All three driver models fail: responsibility cannot be attributed to the AD system under test.
           </p>
         </figure>
       </div>
