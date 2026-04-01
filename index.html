@@ -216,9 +216,9 @@
     <div class="abstract-box">
       Adversarial scenario generation is critical for validating autonomous driving (AD) systems, yet current methods face intertwined challenges: selecting the appropriate adversary in complex multi-agent traffic, generating multi-modal attack behaviors, and determining whether a resulting collision is genuinely the AD system's fault.
       <br><br>
-      This paper presents a <strong>Context-Aware and Responsibility-Sensitive (CARS)</strong> framework for adversarial scenario generation. A <strong>Gaussian mixture diffusion model</strong> replaces the conventional single-Gaussian denoising head with a multi-component mixture output, enabling the adversarial policy to commit to distinct attack modes rather than averaging over them. The model is pre-trained on naturalistic driving data and then refined via <strong>reinforcement learning</strong> in closed-loop simulation to induce safety-critical interactions. A <strong>context-aware selection module</strong> dynamically identifies the most threatening agent at each timestep based on relative geometry and kinematics to the ego agent. A <strong>careful and competent driver model (CCDM)</strong> provides post-hoc responsibility attribution, retaining only scenarios where the collision is attributable to the AD system under test.
+      This paper presents a Context-Aware and Responsibility-Sensitive (<strong>CARS</strong>) framework for adversarial scenario generation. A Gaussian mixture diffusion model replaces the conventional single-Gaussian denoising head with a multi-component mixture output, enabling the adversarial policy to commit to distinct attack modes rather than averaging over them. The model is pre-trained on naturalistic driving data and then refined via reinforcement learning in closed-loop simulation to induce safety-critical interactions. A context-aware selection module dynamically identifies the most threatening agent at each timestep based on relative geometry and kinematics to the ego agent. A careful and competent driver model (CCDM) provides post-hoc responsibility attribution, retaining only scenarios where the collision is attributable to the AD system under test.
       <br><br>
-      Experiments on the nuScenes dataset validate the CARS framework across <strong>408 collision scenarios</strong>. The CCDM confirms <strong>403 of these</strong> as the AD system's responsibility. The Gaussian mixture head increases the proportion of high-severity scenarios by <strong>14.4%</strong> over a single-Gaussian baseline, and the learned adversarial policy transfers zero-shot to a different AD system.
+      Experiments on the nuScenes dataset validate the CARS framework across 408 collision scenarios. The CCDM confirms 403 of these as the AD system's responsibility. The Gaussian mixture head increases the proportion of high-severity scenarios by 14.4% over a single-Gaussian baseline, and the learned adversarial policy transfers zero-shot to a different AD system.
     </div>
   </div>
 </section>
@@ -464,8 +464,9 @@
                 <th>Episodes</th>
                 <th>Hard% ↑</th>
                 <th>TTC<sub>min</sub> median (s) ↓</th>
-                <th>FSM preventable (%)</th>
-                <th>Speed@col (m/s)</th>
+                <th>BD<sup>+</sup>% ↑</th>
+                <th>UP% ↓</th>
+                <th>FSM prev. (%)</th>
               </tr>
             </thead>
             <tbody>
@@ -474,30 +475,33 @@
                 <td>408</td>
                 <td class="best">52.7</td>
                 <td class="best">1.47</td>
-                <td>98.8</td>
-                <td>1.81</td>
+                <td class="best">12.3</td>
+                <td class="best">1.2</td>
+                <td class="best">98.8</td>
               </tr>
               <tr>
                 <td class="model-name">GMD K=1 target</td>
                 <td>180</td>
                 <td>38.3</td>
                 <td>1.51</td>
+                <td>—</td>
+                <td>1.1</td>
                 <td>98.9</td>
-                <td>1.8</td>
               </tr>
               <tr>
                 <td class="model-name">CARS + CTG target</td>
                 <td>315</td>
                 <td>49.5</td>
                 <td>1.69</td>
+                <td>19.0</td>
+                <td>4.1</td>
                 <td>95.9</td>
-                <td>7.23</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p style="font-size:0.83rem;color:#888;margin-top:10px;text-align:center;">
-          CR = Collision Rate · Hard% = fraction of FSM-Hard scenarios · ↑/↓ = higher/lower is better
+          Hard% = fraction of FSM-Hard scenarios · BD<sup>+</sup>% = fraction exceeding FSM braking envelope · UP% = unpreventable rate · ↑/↓ = higher/lower is better
         </p>
       </div>
     </div>
