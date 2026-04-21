@@ -184,13 +184,16 @@
       Ying Wang&nbsp;&nbsp;·&nbsp;&nbsp;
       Zhongpan Zhu&nbsp;&nbsp;·&nbsp;&nbsp;
       Yuxin Zhang&nbsp;&nbsp;·&nbsp;&nbsp;
+      Xintao Yan&nbsp;&nbsp;·&nbsp;&nbsp;
       Mustafa Suphi Erden&nbsp;&nbsp;·&nbsp;&nbsp;
       Cheng Wang
     </p>
 
     <p class="affil-list">
       Heriot-Watt University &nbsp;·&nbsp; Tongji University &nbsp;·&nbsp;
-      University of Shanghai for Science and Technology
+      Jilin University &nbsp;·&nbsp;
+      University of Shanghai for Science and Technology &nbsp;·&nbsp;
+      The University of Hong Kong
     </p>
 
     <div class="btn-group">
@@ -214,11 +217,11 @@
     <h2 class="section-title">Abstract</h2>
     <div class="divider"></div>
     <div class="abstract-box">
-      Safety validation of autonomous driving systems requires adversarial scenarios that are not only severe but also attributable to the system under test. We present <strong>CARS</strong> (<strong>C</strong>ontext-<strong>A</strong>ware, <strong>R</strong>esponsibility-attributed <strong>S</strong>cenario generation), a closed-loop framework that couples a context-aware adversary with integrated responsibility attribution. A Gaussian Mixture Diffusion Model (GMDM), pre-trained on naturalistic driving data and refined through reinforcement learning, generates behaviourally diverse adversarial trajectories. A learned selection module dynamically identifies the most threatening surrounding vehicle at every simulation step, so the adversary tracks the evolving scene rather than being fixed before simulation.
+      Adversarial scenario generation is critical for validating autonomous driving (AD) systems, yet current methods face intertwined challenges: selecting the appropriate adversary in complex multi-agent traffic, generating diverse attack behaviours, and determining whether a resulting collision is genuinely the AD system's fault. We present <strong>CARS</strong> (<strong>C</strong>ontext-<strong>A</strong>ware, <strong>R</strong>esponsibility-attributed <strong>S</strong>cenario generation), an adversarial scenario generation framework with integrated responsibility attribution.
       <br><br>
-      A <strong>careful and competent driver model (CCDM)</strong> drawn from UN Regulation No.&nbsp;157 then evaluates whether each generated collision is attributable to the target AD system: the scenario is retained only when a competent driver could have avoided the collision.
+      In CARS, a Gaussian Mixture Diffusion Model, pre-trained on naturalistic driving data and refined through reinforcement learning, generates behaviourally diverse adversarial trajectories against a target AD system. A learned selection module dynamically identifies the most threatening surrounding vehicle at every simulation step, ensuring a coherent and sustained adversarial interaction. A <strong>careful and competent driver model (CCDM)</strong> enables responsibility attribution: collisions that even a careful and competent driver could not have avoided are not attributed to the AD system under test.
       <br><br>
-      On <strong>408</strong> collision scenarios generated from nuScenes urban traffic, <strong>403 (98.8%)</strong> are attributable to the target, with <strong>52.7%</strong> reaching the FSM <em>Hard</em> criticality tier. The same trained policy transfers <strong>zero-shot</strong> to two naturalistic drone datasets with contrasting scene geometries, retaining <strong>94.5%</strong> attribution on AD4CHE highway traffic and <strong>82.1%</strong> on the RounD roundabout.
+      On the nuScenes urban driving dataset, CARS generates <strong>408</strong> collision scenarios spanning diverse adversarial encounters while maintaining realistic driving dynamics. A CCDM attributes <strong>398 (97.5%)</strong> to the target ADS. The learned adversarial policy transfers <strong>zero-shot</strong> across road topologies and geographical regions, from North American urban roads to European roundabouts and East Asian highways, with only a lightweight agent-selection classifier refitted per dataset. By unifying adversarial generation with regulatory-grade responsibility attribution, CARS provides a principled methodology for certifying the safety of autonomous driving systems, narrowing the gap between simulation-based testing and real-world regulatory acceptance.
     </div>
   </div>
 </section>
@@ -233,13 +236,12 @@
     <div class="columns is-centered">
       <div class="column is-10">
         <figure>
-          <img src="static/images/nc_fig_2.png" alt="CARS Framework Overview" class="method-figure" />
+          <img src="static/images/methodology.png" alt="CARS Closed-loop Pipeline" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>The CARS framework.</strong>
-            (a)&nbsp;A context-aware selection module identifies the most threatening surrounding vehicle at every simulation step via a learned classifier on kinematic features, stabilised by a temporal confirmation gate.
-            (b)&nbsp;A Gaussian Mixture Diffusion Model (GMDM) synthesises adversary trajectories conditioned on the map and the agent histories.
-            (c)&nbsp;Closed-loop PPO fine-tuning steers the distribution toward severe interactions while the diffusion prior keeps the trajectories kinematically plausible.
-            (d)&nbsp;A careful and competent driver model (CCDM) drawn from UN&nbsp;R157 checks each generated collision and discards scenarios that are not attributable to the target AD system.
+            <strong>The CARS closed-loop pipeline.</strong> Three jointly aligned modules address the three limitations of current adversarial scenario generators.
+            <strong>(a) Adaptive adv selection.</strong> At every simulation step a histogram gradient-boosting classifier scores all surrounding agents from their kinematic relationship to the target; a temporal confirmation gate (K<sub>conf</sub>=5) stabilises the choice against transient fluctuations so the selected adversary tracks the evolving conflict.
+            <strong>(b) Realistic and diverse adversarial behaviours.</strong> The adversary samples a trajectory from a Gaussian Mixture Diffusion Model whose reverse denoising step is parameterised by K=3 Gaussian components conditioned on HD-map and agent histories, preserving distinct attack modes as separate mixture branches. PPO rollouts feed the mixture-head output back into the multi-agent scene and reward severe but kinematically plausible approach conflicts.
+            <strong>(c) Scenario validity verification.</strong> Every generated collision is replayed with a careful-and-competent driver model (CCDM) controlling the target; the scenario is retained only if the CCDM still fails to avoid impact, providing a reward-independent check that the failure is attributable to the AD system under test.
           </p>
         </figure>
       </div>
@@ -260,13 +262,15 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/nc_fig_dataset_map_vibrant.png" alt="Cross-dataset coverage" class="method-figure" />
+          <img src="static/images/dataset_compare_planB_v2.png" alt="Evaluation datasets: geography and characteristics" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Geographical distribution</strong> (left) and <strong>scale comparison</strong> (right) of the three evaluation datasets.
-            <strong>nuScenes</strong>: Boston (USA) and Singapore, urban intersections and parking manoeuvres.
-            <strong>AD4CHE</strong>: Changchun (China), multi-lane expressway traffic from an overhead drone.
-            <strong>RounD</strong>: Neuweiler (Germany), four-arm signalised roundabout from a drone.
-            The complementary profiles confirm that the three datasets jointly cover a broader evaluation space than any single dataset.
+            <strong>Geographical distribution</strong> (left) and <strong>characteristic comparison</strong> (right) of the three evaluation datasets. Bars show four complementary features aggregated over all vehicle trajectories in each dataset:
+            <strong>top speed</strong> (95th-percentile speed),
+            <strong>yaw-rate range</strong> (95th-percentile |ψ̇|),
+            <strong>scene density</strong> (mean number of simultaneously tracked vehicles per frame), and
+            <strong>total hours</strong> (aggregate recorded duration across all scenes).
+            The 95th percentile is used in place of the raw maximum to suppress tracking-noise outliers that would otherwise dominate the envelope estimate.
+            The bar lengths confirm that the three datasets cover complementary regimes: <strong>AD4CHE</strong> extends the speed envelope and maximises traffic density, <strong>RounD</strong> demands tight manoeuvring, and <strong>nuScenes</strong> provides a balanced mid-density urban profile.
           </p>
         </figure>
       </div>
@@ -280,7 +284,7 @@
   <div class="container">
     <h2 class="section-title">Demo Scenarios</h2>
     <p class="section-subtitle">
-      Rollout episodes replayed frame-by-frame from recorded HDF5 trajectories on the nuScenes Boston-Seaport map.
+      Collision scenarios replayed frame-by-frame from recorded HDF5 trajectories on the nuScenes Boston-Seaport map.
       All agents move exactly as recorded.
     </p>
     <div class="divider"></div>
@@ -329,7 +333,7 @@
             <strong>(b) Adversary switch</strong><br/>
             <small>
               The <span class="tag-adv">adversary role</span> switches between agents
-              mid-episode via context-aware selection.
+              mid-scenario via context-aware selection.
             </small>
           </div>
         </div>
@@ -398,7 +402,7 @@
             <strong>(f) Adversary switch</strong><br/>
             <small>
               The <span class="tag-adv">adversary role</span> switches between agents
-              mid-episode via context-aware selection.
+              mid-scenario via context-aware selection.
             </small>
           </div>
         </div>
@@ -411,10 +415,10 @@
 <!-- ═══════════════════════════════════ CROSS-DATASET ══════════════════════════ -->
 <section class="content-section bg-light">
   <div class="container">
-    <h2 class="section-title">Zero-shot Cross-dataset Transfer</h2>
+    <h2 class="section-title">Cross-dataset Transfer</h2>
     <p class="section-subtitle">
-      The same frozen CARS policy, trained only on nuScenes urban traffic, is applied without any retraining
-      to two naturalistic drone datasets with contrasting scene geometries.
+      The same frozen CARS policy, trained only on nuScenes urban traffic, is applied to two naturalistic drone datasets with contrasting scene geometries.
+      The diffusion generator and target-model checkpoints are held fixed; only a lightweight agent-selection classifier is refitted on each dataset's labelled target–adversary pairs.
       Both videos are rendered on the original drone photo backgrounds provided with each dataset.
     </p>
     <div class="divider"></div>
@@ -431,8 +435,8 @@
             <small>
               Frozen nuScenes policy applied to a Chinese highway drone recording.
               The context-aware module continues to identify the most threatening
-              surrounding vehicle, and <strong style="color:#ffffff;">94.5%</strong> of the generated
-              collisions on AD4CHE pass the CCDM responsibility check.
+              surrounding vehicle, and <strong style="color:#ffffff;">94.9%</strong> of the generated
+              collisions on AD4CHE pass the FSM responsibility check.
             </small>
           </div>
         </div>
@@ -448,9 +452,9 @@
             <strong>RounD roundabout</strong><br/>
             <small>
               Frozen nuScenes policy applied to a four-arm roundabout drone recording
-              at Neuweiler, Germany — a scene geometry absent from the training
-              distribution. <strong style="color:#ffffff;">82.1%</strong> of the generated collisions on
-              RounD still pass the CCDM responsibility check.
+              at Neuweiler, Germany, a scene geometry absent from the training
+              distribution. <strong style="color:#ffffff;">81.3%</strong> of the generated collisions on
+              RounD still pass the FSM responsibility check.
             </small>
           </div>
         </div>
@@ -465,8 +469,9 @@
   <div class="container">
     <h2 class="section-title">Context-aware Adversary Selection</h2>
     <p class="section-subtitle">
-      The adversary role dynamically transfers between agents mid-episode based on a learned classifier,
-      maintaining a coherent threat across all three datasets without any retraining.
+      A histogram gradient-boosting classifier re-evaluates all surrounding vehicles at every simulation step;
+      a temporal confirmation gate (<em>K</em><sub>conf</sub>=5) suppresses transient ranking errors so the adversary role tracks the evolving scene.
+      The same selection mechanism transfers to unseen scene geometries when retrained on each dataset's labelled target–adversary pairs.
     </p>
     <div class="divider"></div>
 
@@ -476,12 +481,10 @@
           <img src="static/images/nc_fig2_3x4.png" alt="Context-aware adversary selection across datasets" class="method-figure"
                style="background:white; padding:12px; border-radius:12px;" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Adversary selection across datasets.</strong>
-            Rows: nuScenes (top), AD4CHE (middle), RounD (bottom), each from a real rollout episode.
-            Columns&nbsp;1–3: bird's-eye-view snapshots at the start (<em>t</em>=0&nbsp;s), first switch, and collision frame.
-            The <span class="tag-tgt">target</span> is shown in blue, the currently active adversary in <span style="color:#E53935;font-weight:700;">red</span> (A1) and <span style="color:#EF6C00;font-weight:700;">orange</span> (A2), other agents in grey.
-            Column&nbsp;4: decision-tree adversarial probability <em>P</em><sub>adv</sub>(<em>t</em>) for every candidate agent;
-            the vertical dashed line marks the confirmation-gated switch step.
+            <strong>Context-aware adversary selection across datasets.</strong>
+            Rows: <strong>nuScenes</strong> (top), <strong>AD4CHE</strong> (middle), <strong>RounD</strong> (bottom), each from a real rollout scenario.
+            Columns&nbsp;1–3: bird's-eye-view snapshots at the start (<em>t</em>=0&nbsp;s), the adversary-switch frame, and the collision frame. The <span class="tag-tgt">target</span> is shown in blue, the currently active adversary in <span style="color:#E53935;font-weight:700;">red</span> (A1) and <span style="color:#EF6C00;font-weight:700;">orange</span> (A2), and other agents in grey.
+            Column&nbsp;4: adversary-selection probability <em>P</em><sub>adv</sub>(<em>t</em>) for every candidate agent, on a logit (log-odds) scale; the active adversaries are highlighted in their A1/A2 colours and the remaining candidates are thin grey curves. Vertical dashed lines mark the confirmation-gated switch steps.
           </p>
         </figure>
       </div>
@@ -495,7 +498,8 @@
   <div class="container">
     <h2 class="section-title">Responsibility Attribution</h2>
     <p class="section-subtitle">
-      Each generated collision is evaluated under three CCDMs drawn from UN&nbsp;R157, so the attribution conclusion does not depend on a single driver model.
+      Each generated collision is replayed with a reference driver model controlling the target; the scenario is retained only if the reference driver still fails to avoid impact.
+      Attribution is cross-validated under three reference models: <strong>FSM</strong> (UN&nbsp;R157 Annex&nbsp;5, primary CCDM), <strong>CC-JP</strong> (UN&nbsp;R157 Annex&nbsp;4 Appendix&nbsp;3, permissive human-driver baseline), and <strong>RSS</strong> (conservative formal safety envelope).
     </p>
     <div class="divider"></div>
 
@@ -505,12 +509,15 @@
           <img src="static/images/nc_fig5_results.png" alt="Main results on 408 nuScenes scenarios" class="method-figure"
                style="background:white; padding:12px; border-radius:12px;" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Main results on 408 nuScenes collision scenarios.</strong>
-            <em>(a–c)</em> Responsibility attribution via CCDM check. Each panel shows the adversary (red) and target (blue) trajectories with the stop positions of the three reference driver models: <span style="color:#9C27B0;font-weight:600;">FSM</span> (primary), <span style="color:#EF6C00;font-weight:600;">CC-JP</span> (permissive human baseline), <span style="color:#2E7D32;font-weight:600;">RSS</span> (conservative formal baseline).
-            <em>(a)</em> All three stop in time — fully preventable.
-            <em>(b)</em> CC-JP fails while FSM and RSS still stop.
-            <em>(c)</em> RSS fails while FSM and CC-JP still stop. FSM, the primary CCDM, covers both extremes.
-            <em>(d–f)</em> Collision kinematics aggregated over all 408 scenarios: approach direction, adversary speed at contact, and longitudinal closing speed.
+            <strong>Main results on 408 nuScenes collision scenarios generated by CARS.</strong>
+            <em>(a–c)</em> Responsibility attribution via reference-model check. Each panel shows the adversary trajectory (red) and target trajectory (blue); coloured front-edge lines mark the target's stop position for each driver model (<span style="color:#9C27B0;font-weight:600;">purple</span>&nbsp;=&nbsp;FSM, <span style="color:#EF6C00;font-weight:600;">orange</span>&nbsp;=&nbsp;CC-JP, <span style="color:#2E7D32;font-weight:600;">green</span>&nbsp;=&nbsp;RSS).
+            <em>(a)</em> All three drivers stop in time; the scenario is fully preventable.
+            <em>(b)</em> CC-JP fails while FSM and RSS still stop in time.
+            <em>(c)</em> RSS fails while FSM and CC-JP still stop in time. FSM, the primary CCDM, covers both extremes.
+            <em>(d–f)</em> Collision kinematics aggregated across all 408 scenarios.
+            <em>(d)</em> Adversary approach direction in the target's reference frame at the collision step, coloured by FSM criticality tier.
+            <em>(e)</em> Adversary speed at collision, stratified by criticality tier.
+            <em>(f)</em> Longitudinal closing speed distribution; the median of 5.0&nbsp;m/s confirms consistently high-energy encounters.
           </p>
         </figure>
       </div>
@@ -541,87 +548,86 @@
               <tr>
                 <th rowspan="2">Method</th>
                 <th colspan="3" style="border-right:1px solid rgba(255,255,255,0.2);">Responsibility Validity (%) ↑</th>
-                <th colspan="3" style="border-right:1px solid rgba(255,255,255,0.2);">Severity Distribution (%)</th>
-                <th colspan="2" style="border-right:1px solid rgba(255,255,255,0.2);">Risk</th>
-                <th colspan="2">Realism ↓</th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);">Diversity</th>
+                <th colspan="3" style="border-right:1px solid rgba(255,255,255,0.2);">Kinematic Risk</th>
+                <th>Feasibility ↓</th>
               </tr>
               <tr>
                 <th>FSM</th>
                 <th>CC-JP</th>
                 <th style="border-right:1px solid rgba(255,255,255,0.2);">RSS</th>
-                <th>Hard</th>
-                <th>Med</th>
-                <th style="border-right:1px solid rgba(255,255,255,0.2);">Easy</th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);"><em>H</em><sub>crit</sub> ↑</th>
                 <th>TTC<sub>min</sub> (s)</th>
-                <th style="border-right:1px solid rgba(255,255,255,0.2);">BD<sup>+</sup>%</th>
-                <th><em>a</em><sub>95</sub> (m/s²)</th>
-                <th>jerk<sub>95</sub> (m/s³)</th>
+                <th>BD<sup>+</sup>%</th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);"><em>v</em><sub>col</sub> (m/s)</th>
+                <th>infeas %</th>
               </tr>
             </thead>
             <tbody>
               <tr class="model-ours">
                 <td class="model-name model-ours">CARS (Ours)</td>
-                <td class="best">98.8</td>
-                <td>84.3</td>
-                <td>96.6</td>
-                <td>52.4</td>
-                <td>13.4</td>
-                <td>34.2</td>
-                <td>1.47</td>
-                <td>12.3</td>
-                <td>2.26</td>
-                <td>15.64</td>
+                <td class="best">97.5</td>
+                <td class="best">80.6</td>
+                <td class="best">96.6</td>
+                <td class="best">0.909</td>
+                <td>1.57</td>
+                <td>12.5</td>
+                <td>1.51</td>
+                <td class="best">0.00</td>
               </tr>
               <tr>
-                <td class="model-name">Bezier</td>
-                <td>96.0</td>
-                <td>86.6</td>
-                <td>95.5</td>
-                <td>20.7</td>
-                <td>28.4</td>
-                <td>50.9</td>
-                <td>3.87</td>
-                <td>22.3</td>
-                <td>0.23</td>
-                <td>0.35</td>
+                <td class="model-name">CARS w/o mix</td>
+                <td>83.9</td>
+                <td>38.7</td>
+                <td>72.6</td>
+                <td>0.292</td>
+                <td>1.29</td>
+                <td>59.7</td>
+                <td>3.17</td>
+                <td>0.00</td>
+              </tr>
+              <tr>
+                <td class="model-name">Bezier-CAT</td>
+                <td>65.7</td>
+                <td>36.6</td>
+                <td>10.6</td>
+                <td>0.012</td>
+                <td>0.54</td>
+                <td>31.2</td>
+                <td>3.81</td>
+                <td>37.73</td>
               </tr>
               <tr>
                 <td class="model-name">STRIVE</td>
-                <td>32.9</td>
-                <td>17.4</td>
+                <td>31.2</td>
+                <td>5.8</td>
                 <td>9.9</td>
-                <td>84.6</td>
-                <td>7.4</td>
-                <td>8.1</td>
-                <td>0.22</td>
-                <td>33.2</td>
-                <td>9.06</td>
-                <td>106.44</td>
+                <td>0.128</td>
+                <td>0.21</td>
+                <td>33.7</td>
+                <td>1.12</td>
+                <td>25.95</td>
               </tr>
               <tr>
                 <td class="model-name">SafeSim</td>
-                <td>65.5</td>
                 <td>58.6</td>
+                <td>44.8</td>
                 <td>51.7</td>
-                <td>100.0</td>
-                <td>0.0</td>
-                <td>0.0</td>
-                <td>1.17</td>
+                <td>0.272</td>
+                <td>0.95</td>
                 <td>34.5</td>
-                <td>3.69</td>
-                <td>18.57</td>
+                <td>0.39</td>
+                <td>2.49</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p style="font-size:0.82rem;color:#888;margin-top:12px;text-align:center;">
-          CARS is the only method that simultaneously achieves high responsibility attribution (98.8% FSM valid),
-          adversary kinematics within production-vehicle bounds (<em>a</em><sub>95</sub>=2.26&nbsp;m/s², jerk<sub>95</sub>=15.64&nbsp;m/s³),
-          and balanced coverage across all three criticality tiers.
-          Each baseline fails on a different axis:
-          Bezier produces smooth but non-severe trajectories,
-          STRIVE exceeds physical kinematic limits,
-          and SafeSim collapses into degenerate Hard-only distributions.
+          Validity columns report the percentage of each method's real-collision scenarios classified as attributable to the target under the three reference models.
+          <em>H</em><sub>crit</sub> is the normalised Shannon entropy of the FSM Hard/Medium/Easy distribution (higher is more balanced).
+          infeas% is the scenario-averaged per-step violation rate of human-driver physical bounds (|<em>a</em>|&gt;8&nbsp;m/s², |jerk|&gt;50&nbsp;m/s³, |<em>a</em><sub>lat</sub>|&gt;8&nbsp;m/s²).
+          CARS is the only method that simultaneously achieves high attribution (<strong>97.5%</strong> FSM), balanced severity coverage (<em>H</em><sub>crit</sub>=<strong>0.909</strong>), and fully compliant adversary trajectories (infeas=<strong>0.00%</strong>).
+          Each baseline fails on a different axis: Bezier-CAT and STRIVE drive the adversary beyond physical limits; SafeSim concentrates severity onto the Hard tier; STRIVE also loses two-thirds of its collisions under FSM as unattributable.
         </p>
       </div>
     </div>
@@ -637,40 +643,40 @@
             <thead>
               <tr>
                 <th>Mechanism</th>
-                <th>FSM (5)</th>
-                <th>CC-JP (64)</th>
+                <th>FSM (10)</th>
+                <th>CC-JP (79)</th>
                 <th>RSS (14)</th>
-                <th>Any (74)</th>
+                <th>Any (92)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="model-name">BD<sup>+</sup> at reaction boundary</td>
-                <td>2 (40%)</td>
-                <td>52 (81%)</td>
+                <td class="model-name">BD<sup>+</sup> during scenario</td>
+                <td>2 (20%)</td>
+                <td>67 (85%)</td>
                 <td>7 (50%)</td>
-                <td>55 (74%)</td>
+                <td>70 (76%)</td>
               </tr>
               <tr>
                 <td class="model-name">CFS ≥ 0.9</td>
-                <td>4 (80%)</td>
+                <td>5 (50%)</td>
                 <td>0 (0%)</td>
                 <td>0 (0%)</td>
-                <td>4 (5%)</td>
+                <td>5 (5%)</td>
               </tr>
               <tr>
                 <td class="model-name">TTC &lt; 1 s</td>
-                <td>2 (40%)</td>
-                <td>58 (91%)</td>
+                <td>9 (90%)</td>
+                <td>73 (92%)</td>
                 <td>12 (86%)</td>
-                <td>66 (89%)</td>
+                <td>86 (93%)</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p style="font-size:0.82rem;color:#888;margin-top:12px;text-align:center;">
-          Trigger mechanisms for episodes that each CCDM cannot prevent (multiple causes per episode possible).
-          Most unpreventable cases arise from encounter-geometry limits (short TTC, physical braking deficit) rather than CCDM-specific artefacts,
+          Trigger mechanisms for unpreventable cases on 408 nuScenes scenarios (multiple causes per scenario possible). Counts within each reference model's unpreventable set; "Any" is the union across the three reference models.
+          Most unpreventable cases arise from encounter-geometry limits (short TTC, physical braking deficit) rather than reference-model-specific artefacts,
           confirming that the AD system under test should not be held at fault for them.
         </p>
       </div>
@@ -707,15 +713,15 @@
                 <td class="model-name model-ours">nuScenes <span style="background:#e3f0ff;color:#1565c0;border-radius:4px;padding:2px 6px;font-size:0.78rem;">Training</span></td>
                 <td>urban intersections</td>
                 <td>408</td>
-                <td class="best">98.8</td>
-                <td class="best">84.3</td>
+                <td class="best">97.5</td>
+                <td class="best">80.6</td>
                 <td class="best">96.6</td>
               </tr>
               <tr>
                 <td class="model-name">AD4CHE</td>
                 <td>multi-lane highway</td>
                 <td>470</td>
-                <td>94.5</td>
+                <td>94.9</td>
                 <td>69.8</td>
                 <td>92.1</td>
               </tr>
@@ -723,15 +729,16 @@
                 <td class="model-name">RounD</td>
                 <td>four-arm roundabout</td>
                 <td>927</td>
-                <td>82.1</td>
-                <td>68.0</td>
-                <td>75.4</td>
+                <td>81.3</td>
+                <td>54.0</td>
+                <td>78.3</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p style="font-size:0.83rem;color:#888;margin-top:10px;text-align:center;">
-          Valid% = fraction of collisions preventable by the CCDM (higher is better). AD4CHE and RounD numbers are from the same policy applied zero-shot, without any retraining or fine-tuning.
+          Valid% = fraction of collisions classified as attributable to the target by the reference driver model (higher is better).
+          AD4CHE and RounD numbers are from the same frozen CARS generator, with only the lightweight agent-selection classifier refitted to each dataset's labelled target–adversary pairs.
         </p>
       </div>
     </div>
@@ -742,23 +749,23 @@
         <div style="display:flex;gap:24px;flex-wrap:wrap;">
           <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#1a1a4e,#0f0c29);color:white;
                       border-radius:14px;padding:28px;text-align:center;">
-            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">403/408</div>
+            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">398/408</div>
             <div style="font-size:0.88rem;color:#e3ecff;margin-top:6px;">
               nuScenes collisions<br/>attributable to target
             </div>
           </div>
           <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#1a3a1a,#0c2010);color:white;
                       border-radius:14px;padding:28px;text-align:center;">
-            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">94.5%</div>
+            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">94.9%</div>
             <div style="font-size:0.88rem;color:#dcf0dc;margin-top:6px;">
-              AD4CHE highway<br/>zero-shot attribution
+              AD4CHE highway<br/>cross-dataset attribution
             </div>
           </div>
           <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#3a1a00,#200c00);color:white;
                       border-radius:14px;padding:28px;text-align:center;">
-            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">82.1%</div>
+            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">81.3%</div>
             <div style="font-size:0.88rem;color:#ffe8c8;margin-top:6px;">
-              RounD roundabout<br/>zero-shot attribution
+              RounD roundabout<br/>cross-dataset attribution
             </div>
           </div>
         </div>
@@ -780,8 +787,8 @@
   title     = {Learning Responsibility-Attributed Adversarial Scenarios
                for Testing Autonomous Vehicles},
   author    = {Xiao, Yizhuo and Yan, Haotian and Wang, Ying and
-               Zhu, Zhongpan and Zhang, Yuxin and Erden, Mustafa Suphi
-               and Wang, Cheng},
+               Zhu, Zhongpan and Zhang, Yuxin and Yan, Xintao and
+               Erden, Mustafa Suphi and Wang, Cheng},
   journal   = {Under review},
   year      = {2026},
   note      = {\url{https://robosafe-lab.github.io/CARS}}
