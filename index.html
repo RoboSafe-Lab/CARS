@@ -239,12 +239,12 @@
     <div class="columns is-centered">
       <div class="column is-10">
         <figure>
-          <img src="static/images/methodology.png?v=20260421" alt="CARS Closed-loop Pipeline" class="method-figure" />
+          <img src="static/images/methodology.png?v=20260427" alt="CARS Closed-loop Pipeline" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>The CARS closed-loop pipeline.</strong> Three jointly aligned modules address the three limitations of current adversarial scenario generators.
-            <strong>(a) Adaptive adv selection.</strong> At every simulation step a histogram gradient-boosting classifier scores all surrounding agents from their kinematic relationship to the target; a temporal confirmation gate (K<sub>conf</sub>=5) stabilises the choice against transient fluctuations so the selected adversary tracks the evolving conflict.
-            <strong>(b) Realistic and diverse adversarial behaviours.</strong> The adversary samples a trajectory from a Gaussian Mixture Diffusion Model whose reverse denoising step is parameterised by K=3 Gaussian components conditioned on HD-map and agent histories, preserving distinct attack modes as separate mixture branches. PPO rollouts feed the mixture-head output back into the multi-agent scene and reward severe but kinematically plausible approach conflicts.
-            <strong>(c) Scenario validity verification.</strong> Every generated collision is replayed with a careful-and-competent driver model (CCDM) controlling the target; the scenario is retained only if the CCDM still fails to avoid impact, providing a reward-independent check that the failure is attributable to the AD system under test.
+            <strong>CARS closed-loop scenario generation and responsibility-attribution pipeline.</strong><br>
+            <strong>(a) Adaptive adversary selection.</strong> At each simulation step, CARS scores surrounding agents by their kinematic relationship to the target ADS. A temporal confirmation gate stabilises the selected adversary, allowing the threat assignment to follow the evolving conflict without transient switching.<br>
+            <strong>(b) Diverse adversarial behaviour generation.</strong> A Gaussian-mixture diffusion policy represents distinct attack modes as separate denoising components rather than averaging them into a single trajectory mode. PPO refinement steers the policy toward safety-critical yet physically plausible approach conflicts, while the pre-trained diffusion prior anchors the adversary to vehicle-feasible motion in closed-loop simulation.<br>
+            <strong>(c) Responsibility attribution replay.</strong> Each generated collision is replayed with a careful-and-competent driver model (CCDM) controlling the target while the adversary trajectory is held fixed. If the CCDM avoids the collision, the original impact is treated as preventable and therefore attributable to the target AD system.
           </p>
         </figure>
       </div>
@@ -265,15 +265,13 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/dataset_compare_planB_v2.png?v=20260421" alt="Evaluation datasets: geography and characteristics" class="method-figure" />
+          <img src="static/images/nc_fig3.png?v=20260427" alt="Three evaluation datasets spanning three continents and three road topologies" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Geographical distribution</strong> (left) and <strong>characteristic comparison</strong> (right) of the three evaluation datasets. Bars show four complementary features aggregated over all vehicle trajectories in each dataset:
-            <strong>top speed</strong> (95th-percentile speed),
-            <strong>yaw-rate range</strong> (95th-percentile |ψ̇|),
-            <strong>scene density</strong> (mean number of simultaneously tracked vehicles per frame), and
-            <strong>total hours</strong> (aggregate recorded duration across all scenes).
-            The 95th percentile is used in place of the raw maximum to suppress tracking-noise outliers that would otherwise dominate the envelope estimate.
-            The bar lengths confirm that the three datasets cover complementary regimes: <strong>AD4CHE</strong> extends the speed envelope and maximises traffic density, <strong>RounD</strong> demands tight manoeuvring, and <strong>nuScenes</strong> provides a balanced mid-density urban profile.
+            <strong>Three evaluation datasets spanning three continents and three road topologies.</strong><br>
+            <strong>(a)</strong> nuScenes front-facing camera frame at a Boston (US) intersection (1,000 urban scenes across Boston and Singapore).<br>
+            <strong>(b)</strong> RounD overhead drone frame at the Neuweiler (Germany) roundabout (22 recordings of four-arm signalised geometry).<br>
+            <strong>(c)</strong> AD4CHE overhead drone frame on a multi-lane highway (68 recordings across four Chinese cities).<br>
+            <strong>(d)</strong> Geographic locations of the four data-collection countries; pins are coloured by dataset.
           </p>
         </figure>
       </div>
@@ -481,13 +479,15 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/nc_fig2_3x4.png?v=20260421" alt="Context-aware adversary selection across datasets" class="method-figure"
+          <img src="static/images/nc_fig4_heatmap.png?v=20260427" alt="Context-aware adversary re-selection across datasets" class="method-figure"
                style="background:white; padding:12px; border-radius:12px;" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Context-aware adversary selection across datasets.</strong>
-            Rows: <strong>nuScenes</strong> (top), <strong>AD4CHE</strong> (middle), <strong>RounD</strong> (bottom), each from a real rollout scenario.
-            Columns&nbsp;1–3: bird's-eye-view snapshots at the start (<em>t</em>=0&nbsp;s), the adversary-switch frame, and the collision frame. The <span class="tag-tgt">target</span> is shown in blue, the currently active adversary in <span style="color:#E53935;font-weight:700;">red</span> (A1) and <span style="color:#EF6C00;font-weight:700;">orange</span> (A2), and other agents in grey.
-            Column&nbsp;4: adversary-selection probability <em>P</em><sub>adv</sub>(<em>t</em>) for every candidate agent, on a logit (log-odds) scale; the active adversaries are highlighted in their A1/A2 colours and the remaining candidates are thin grey curves. Vertical dashed lines mark the confirmation-gated switch steps.
+            <strong>Context-aware adversary re-selection across datasets.</strong><br>
+            <strong>(a)</strong> nuScenes.<br>
+            <strong>(b)</strong> AD4CHE.<br>
+            <strong>(c)</strong> RounD.<br>
+            Each row shows three bird's-eye-view snapshots from one rollout scenario at <em>t</em>=0, the adversary-switch frame, and the collision frame, with a heatmap strip beneath giving the per-step adversarial probability <em>P</em><sub>adv</sub>(<em>t</em>) for candidates A1 (upper) and A2 (lower); darker red indicates higher probability.
+            The <span class="tag-tgt">target</span> is shown in blue, the currently active adversary in <span style="color:#E53935;font-weight:700;">red</span>, and other agents in grey.
           </p>
         </figure>
       </div>
@@ -509,18 +509,15 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/nc_fig5_results.png?v=20260421" alt="Main results on 408 nuScenes scenarios" class="method-figure"
+          <img src="static/images/nc_fig5_results_triangles.png?v=20260427" alt="Responsibility attribution and collision kinematics on 408 CARS-generated nuScenes scenarios" class="method-figure"
                style="background:white; padding:12px; border-radius:12px;" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Main results on 408 nuScenes collision scenarios generated by CARS.</strong>
-            <em>(a–c)</em> Responsibility attribution via reference-model check. Each panel shows the adversary trajectory (red) and target trajectory (blue); coloured front-edge lines mark the target's stop position for each driver model (<span style="color:#9C27B0;font-weight:600;">purple</span>&nbsp;=&nbsp;FSM, <span style="color:#EF6C00;font-weight:600;">orange</span>&nbsp;=&nbsp;CC-JP, <span style="color:#2E7D32;font-weight:600;">green</span>&nbsp;=&nbsp;RSS).
-            <em>(a)</em> All three drivers stop in time; the scenario is fully preventable.
-            <em>(b)</em> CC-JP fails while FSM and RSS still stop in time.
-            <em>(c)</em> RSS fails while FSM and CC-JP still stop in time. FSM, the primary CCDM, covers both extremes.
-            <em>(d–f)</em> Collision kinematics aggregated across all 408 scenarios.
-            <em>(d)</em> Adversary approach direction in the target's reference frame at the collision step, coloured by FSM criticality tier.
-            <em>(e)</em> Adversary speed at collision, stratified by criticality tier.
-            <em>(f)</em> Longitudinal closing speed distribution; the median of 5.0&nbsp;m/s confirms consistently high-energy encounters.
+            <strong>Responsibility attribution and collision kinematics on 408 CARS-generated nuScenes scenarios.</strong><br>
+            <strong>(a–c)</strong> Representative scenarios in which all three reference models avoid the collision <em>(a)</em>, only CC-JP fails <em>(b)</em>, and only RSS fails <em>(c)</em>. The adversary trajectory is shown in <span style="color:#E53935;font-weight:600;">red</span>, the target trajectory in <span style="color:#1565C0;font-weight:600;">blue</span>, and the target's stop position under each reference model is marked by a front-edge line (<span style="color:#9C27B0;font-weight:600;">purple</span>, FSM; <span style="color:#EF6C00;font-weight:600;">orange</span>, CC-JP; <span style="color:#2E7D32;font-weight:600;">green</span>, RSS).<br>
+            <strong>(d)</strong> Adversary approach direction in the target frame at the collision step.<br>
+            <strong>(e)</strong> Distribution of adversary speed at collision.<br>
+            <strong>(f)</strong> Distribution of longitudinal closing speed.<br>
+            Points in <em>(d)</em> and curves in <em>(e)</em> are coloured by FSM criticality tier (Hard, Medium, Easy).
           </p>
         </figure>
       </div>
