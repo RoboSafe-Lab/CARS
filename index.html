@@ -91,6 +91,59 @@
       margin-top: 12px; max-width: 820px; margin-left: auto; margin-right: auto;
     }
 
+    /* ── Attribution 3×2 panel grid (mirrors paper Fig.4 layout) ── */
+    .attr-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 14px;
+      row-gap: 10px;
+      align-items: start;
+    }
+    .attr-grid-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 14px;
+      row-gap: 0;
+    }
+    .attr-cell { width: 100%; overflow: visible; }
+    .attr-cell img { display: block; width: 100%; height: auto; }
+    /* paneltitle: bold letter + period + descriptor (Helvetica-ish sans) */
+    .attr-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+    .attr-title strong { font-size: 0.95rem; margin-right: 4px; }
+    /* Horizontal nudges on bottom-row panels to align their plot area
+       with the BEV columns above. Values derived from paper's
+       \hspace*{-10pt/-13pt/-6pt} ÷ 0.32\textwidth (~127pt). */
+    .attr-cell.shift-d img { margin-left: -7.9%; width: 107.9%; max-width: none; }
+    .attr-cell.shift-e img { margin-left: -10.3%; width: 110.3%; max-width: none; }
+    .attr-cell.shift-f img { margin-left: -4.7%; width: 104.7%; max-width: none; }
+    /* Unified legend strip between BEV and stat rows */
+    .attr-legend {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      padding: 8px 14px;
+      margin: 4px 0;
+      border: 1px solid rgba(0,0,0,0.18);
+      border-radius: 4px;
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: #1a1a2e;
+    }
+    .attr-legend .swatch { display: inline-block; width: 1.1em; height: 0.8em; vertical-align: middle; margin-right: 5px; border-radius: 1px; }
+    .attr-legend .stroke { display: inline-block; width: 1.2em; height: 2px; vertical-align: middle; margin-right: 5px; }
+
     /* ── Video grid ── */
     .video-card {
       border-radius: 12px; overflow: hidden;
@@ -191,11 +244,11 @@
 
     <p class="affil-list" style="line-height:1.75;">
       <sup>1</sup>&nbsp;School of Engineering and Physical Sciences, Heriot-Watt University, Edinburgh, U.K.<br/>
-      <sup>2</sup>&nbsp;Shanghai Research Institute for Intelligent Autonomous Systems, Tongji University, Shanghai, China<br/>
+      <sup>2</sup>&nbsp;State Key Laboratory of Autonomous Intelligent Unmanned Systems, Tongji University, Shanghai, China<br/>
       <sup>3</sup>&nbsp;College of Computer Science and Technology, Jilin University, Changchun, China<br/>
       <sup>4</sup>&nbsp;University of Shanghai for Science and Technology, Shanghai, China<br/>
       <sup>5</sup>&nbsp;National Key Laboratory of Automotive Chassis Integration and Bionics, Jilin University, Changchun, China<br/>
-      <sup>6</sup>&nbsp;Department of Civil Engineering, Hongkong University, Hongkong, China<br/>
+      <sup>6</sup>&nbsp;Department of Civil Engineering, The University of Hongkong, Hongkong, China<br/>
       <sup>*</sup>&nbsp;Corresponding author: cheng.wang@hw.ac.uk
     </p>
 
@@ -220,11 +273,11 @@
     <h2 class="section-title">Abstract</h2>
     <div class="divider"></div>
     <div class="abstract-box">
-      Adversarial scenario generation is critical for validating autonomous driving (AD) systems, yet current methods face intertwined challenges: selecting the appropriate adversary in complex multi-agent traffic, generating diverse attack behaviours, and determining whether a resulting collision is genuinely the AD system's fault. We present <strong>CARS</strong> (<strong>C</strong>ontext-<strong>A</strong>ware, <strong>R</strong>esponsibility-attributed <strong>S</strong>cenario generation), an adversarial scenario generation framework with integrated responsibility attribution.
+      Validating autonomous driving systems (ADSs) requires testing their responses to rare, high-risk traffic interactions. Public-road testing cannot cover these long-tail events efficiently, making simulation-based adversarial scenario generation an important tool for safety evaluation.
       <br><br>
-      In CARS, a Gaussian Mixture Diffusion Model, pre-trained on naturalistic driving data and refined through reinforcement learning, generates behaviourally diverse adversarial trajectories against a target AD system. A learned selection module dynamically identifies the most threatening surrounding vehicle at every simulation step, ensuring a coherent and sustained adversarial interaction. A <strong>careful and competent driver model (CCDM)</strong> enables responsibility attribution: collisions that even a careful and competent driver could not have avoided are not attributed to the AD system under test.
+      However, a generated collision is informative only if it exposes an avoidable failure of the ADS, rather than a crash that a careful and competent reference driver would also fail to avoid. Here we present <strong>CARS</strong> (<strong>C</strong>ontext-<strong>A</strong>ware, <strong>R</strong>esponsibility-attributed <strong>S</strong>cenario generation), a framework for generating adversarial scenarios with responsibility attribution as a generation objective. CARS combines context-aware adversary selection with a generative adversarial policy optimized in closed-loop simulation.
       <br><br>
-      On the nuScenes urban driving dataset, CARS generates <strong>408</strong> collision scenarios spanning diverse adversarial encounters while maintaining realistic driving dynamics. A CCDM attributes <strong>398 (97.5%)</strong> to the target ADS. The learned adversarial policy transfers <strong>zero-shot</strong> across road topologies and geographical regions, from North American urban roads to European roundabouts and East Asian highways, with only a lightweight agent-selection classifier refitted per dataset. By unifying adversarial generation with regulatory-grade responsibility attribution, CARS provides a principled methodology for certifying the safety of autonomous driving systems, narrowing the gap between simulation-based testing and real-world regulatory acceptance.
+      Across different road topologies, CARS consistently generates feasible collision scenarios with high attribution rates under multiple reference models. These results show that adversarial simulation can move beyond producing collisions toward constructing responsibility-attributed test evidence for ADS safety validation.
     </div>
   </div>
 </section>
@@ -239,12 +292,12 @@
     <div class="columns is-centered">
       <div class="column is-10">
         <figure>
-          <img src="static/images/methodology.png?v=20260427" alt="CARS Closed-loop Pipeline" class="method-figure" />
+          <img src="static/images/methodology.png?v=20260512" alt="CARS Closed-loop Pipeline" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>CARS closed-loop scenario generation and responsibility-attribution pipeline.</strong><br>
-            <strong>(a) Adaptive adversary selection.</strong> At each simulation step, CARS scores surrounding agents by their kinematic relationship to the target ADS. A temporal confirmation gate stabilises the selected adversary, allowing the threat assignment to follow the evolving conflict without transient switching.<br>
-            <strong>(b) Diverse adversarial behaviour generation.</strong> A Gaussian-mixture diffusion policy represents distinct attack modes as separate denoising components rather than averaging them into a single trajectory mode. PPO refinement steers the policy toward safety-critical yet physically plausible approach conflicts, while the pre-trained diffusion prior anchors the adversary to vehicle-feasible motion in closed-loop simulation.<br>
-            <strong>(c) Responsibility attribution replay.</strong> Each generated collision is replayed with a careful-and-competent driver model (CCDM) controlling the target while the adversary trajectory is held fixed. If the CCDM avoids the collision, the original impact is treated as preventable and therefore attributable to the target AD system.
+            <strong>CARS responsibility-attributed adversarial scenario generation framework.</strong><br>
+            <strong>(a) Context-aware adversary selection.</strong> At each simulation step, CARS scores surrounding agents by their kinematic relationship to the ADS and stabilizes the selected agent over time, allowing the threat assignment to track the evolving conflict.<br>
+            <strong>(b) Adversarial trajectory generation.</strong> The selected agent is initialized from a Gaussian-mixture diffusion prior. Closed-loop reinforcement learning fine-tunes the agent to approach the ADS and create safety-critical interactions.<br>
+            <strong>(c) Attribution-aware objective.</strong> CARS targets ADS-attributable collisions under a CCD reference. A collision is attributable when it occurs for the ADS under test but would have been avoided by the CCD in the same encounter.
           </p>
         </figure>
       </div>
@@ -265,11 +318,11 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/nc_fig3.png?v=20260427" alt="Three evaluation datasets spanning three continents and three road topologies" class="method-figure" />
+          <img src="static/images/nc_fig3.png?v=20260512" alt="Three evaluation datasets spanning three continents and three road topologies" class="method-figure" />
           <p class="figure-caption" style="margin-top:14px;">
             <strong>Three evaluation datasets spanning three continents and three road topologies.</strong><br>
             <strong>(a)</strong> nuScenes front-facing camera frame at a Boston (US) intersection (1,000 urban scenes across Boston and Singapore).<br>
-            <strong>(b)</strong> RounD overhead drone frame at the Neuweiler (Germany) roundabout (22 recordings of four-arm signalised geometry).<br>
+            <strong>(b)</strong> RounD overhead drone frame at the Neuweiler (Germany) roundabout (22 recordings of a four-arm yield-priority roundabout).<br>
             <strong>(c)</strong> AD4CHE overhead drone frame on a multi-lane highway (68 recordings across four Chinese cities).<br>
             <strong>(d)</strong> Geographic locations of the four data-collection countries; pins are coloured by dataset.
           </p>
@@ -284,10 +337,6 @@
 <section class="content-section bg-light">
   <div class="container">
     <h2 class="section-title">Demo Scenarios</h2>
-    <p class="section-subtitle">
-      Collision scenarios replayed frame-by-frame from recorded HDF5 trajectories on the nuScenes Boston-Seaport map.
-      All agents move exactly as recorded.
-    </p>
     <div class="divider"></div>
 
     <!-- Legend -->
@@ -436,7 +485,7 @@
             <small>
               Frozen nuScenes policy applied to a Chinese highway drone recording.
               The context-aware module continues to identify the most threatening
-              surrounding vehicle, and <strong style="color:#ffffff;">94.9%</strong> of the generated
+              surrounding vehicle, and <strong style="color:#ffffff;">76.4%</strong> of the generated
               collisions on AD4CHE pass the FSM responsibility check.
             </small>
           </div>
@@ -454,7 +503,7 @@
             <small>
               Frozen nuScenes policy applied to a four-arm roundabout drone recording
               at Neuweiler, Germany, a scene geometry absent from the training
-              distribution. <strong style="color:#ffffff;">81.3%</strong> of the generated collisions on
+              distribution. <strong style="color:#ffffff;">57.5%</strong> of the generated collisions on
               RounD still pass the FSM responsibility check.
             </small>
           </div>
@@ -479,7 +528,7 @@
     <div class="columns is-centered">
       <div class="column is-11">
         <figure>
-          <img src="static/images/nc_fig4_heatmap.png?v=20260427" alt="Context-aware adversary re-selection across datasets" class="method-figure"
+          <img src="static/images/nc_fig4_heatmap.png?v=20260512" alt="Context-aware adversary re-selection across datasets" class="method-figure"
                style="background:white; padding:12px; border-radius:12px;" />
           <p class="figure-caption" style="margin-top:14px;">
             <strong>Context-aware adversary re-selection across datasets.</strong><br>
@@ -501,23 +550,59 @@
   <div class="container">
     <h2 class="section-title">Responsibility Attribution</h2>
     <p class="section-subtitle">
-      Each generated collision is replayed with a reference driver model controlling the target; the scenario is retained only if the reference driver still fails to avoid impact.
-      Attribution is cross-validated under three reference models: <strong>FSM</strong> (UN&nbsp;R157 Annex&nbsp;5, primary CCDM), <strong>CC-JP</strong> (UN&nbsp;R157 Annex&nbsp;4 Appendix&nbsp;3, permissive human-driver baseline), and <strong>RSS</strong> (conservative formal safety envelope).
+      Each generated collision is replayed with a reference driver model controlling the target while the adversary trajectory is held fixed; the scenario is retained only if the reference driver still fails to avoid impact.
+      Attribution is cross-validated under three reference models: <strong>FSM</strong> (UN&nbsp;R157 primary CCDM), <strong>CC-JP</strong> (Japanese careful-driver reference), and <strong>RSS</strong> (formal safety envelope).
     </p>
     <div class="divider"></div>
 
     <div class="columns is-centered">
       <div class="column is-11">
-        <figure>
-          <img src="static/images/nc_fig5_results_triangles.png?v=20260427" alt="Responsibility attribution and collision kinematics on 408 CARS-generated nuScenes scenarios" class="method-figure"
-               style="background:white; padding:12px; border-radius:12px;" />
+        <figure style="background:white; padding:16px; border-radius:12px;">
+          <div class="attr-grid">
+            <!-- Top row: BEV scenarios (a/b/c) -->
+            <div class="attr-cell">
+              <div class="attr-title"><strong>a.</strong> FSM fails</div>
+              <img src="static/images/fig4_panel_a.png?v=20260512" alt="FSM fails" />
+            </div>
+            <div class="attr-cell">
+              <div class="attr-title"><strong>b.</strong> CC-JP fails</div>
+              <img src="static/images/fig4_panel_b.png?v=20260512" alt="CC-JP fails" />
+            </div>
+            <div class="attr-cell">
+              <div class="attr-title"><strong>c.</strong> RSS fails</div>
+              <img src="static/images/fig4_panel_c.png?v=20260512" alt="RSS fails" />
+            </div>
+
+            <!-- Unified legend strip between BEV and statistical rows -->
+            <div class="attr-legend">
+              <span><span class="swatch" style="background:#E53935;"></span>Adversary</span>
+              <span><span class="swatch" style="background:#1E88E5;"></span>Target</span>
+              <span><span class="swatch" style="background:#888;"></span>Other agents</span>
+              <span><span class="stroke" style="background:#9C27B0;"></span>FSM</span>
+              <span><span class="stroke" style="background:#EF6C00;"></span>CC-JP</span>
+              <span><span class="stroke" style="background:#2E7D32;"></span>RSS</span>
+            </div>
+
+            <!-- Bottom row: statistical panels (d/e/f) with horizontal nudges -->
+            <div class="attr-cell shift-d">
+              <div class="attr-title"><strong>d.</strong> Physical-margin distribution</div>
+              <img src="static/images/fig4_panel_d.png?v=20260512" alt="Max braking deficit by FSM criticality tier" />
+            </div>
+            <div class="attr-cell shift-e">
+              <div class="attr-title"><strong>e.</strong> <em>Adv</em> speed at collision</div>
+              <img src="static/images/fig4_panel_e.png?v=20260512" alt="Adversary speed at collision" />
+            </div>
+            <div class="attr-cell shift-f">
+              <div class="attr-title"><strong>f.</strong> Approach urgency</div>
+              <img src="static/images/fig4_panel_f.png?v=20260512" alt="Longitudinal closing speed at collision" />
+            </div>
+          </div>
           <p class="figure-caption" style="margin-top:14px;">
-            <strong>Responsibility attribution and collision kinematics on 408 CARS-generated nuScenes scenarios.</strong><br>
-            <strong>(a–c)</strong> Representative scenarios in which all three reference models avoid the collision <em>(a)</em>, only CC-JP fails <em>(b)</em>, and only RSS fails <em>(c)</em>. The adversary trajectory is shown in <span style="color:#E53935;font-weight:600;">red</span>, the target trajectory in <span style="color:#1565C0;font-weight:600;">blue</span>, and the target's stop position under each reference model is marked by a front-edge line (<span style="color:#9C27B0;font-weight:600;">purple</span>, FSM; <span style="color:#EF6C00;font-weight:600;">orange</span>, CC-JP; <span style="color:#2E7D32;font-weight:600;">green</span>, RSS).<br>
-            <strong>(d)</strong> Adversary approach direction in the target frame at the collision step.<br>
-            <strong>(e)</strong> Distribution of adversary speed at collision.<br>
-            <strong>(f)</strong> Distribution of longitudinal closing speed.<br>
-            Points in <em>(d)</em> and curves in <em>(e)</em> are coloured by FSM criticality tier (Hard, Medium, Easy).
+            <strong>Responsibility attribution and collision kinematics on CARS-generated nuScenes scenarios.</strong><br>
+            <strong>(a–c)</strong> Representative attribution disagreements in which <em>FSM fails</em> (a), <em>CC-JP fails</em> (b), and <em>RSS fails</em> (c). Adversary trajectory in <span style="color:#E53935;font-weight:600;">red</span>; target trajectory in <span style="color:#1565C0;font-weight:600;">blue</span>; the target's stop position under each reference model is shown as a front-edge line (<span style="color:#9C27B0;font-weight:600;">purple</span>, FSM; <span style="color:#EF6C00;font-weight:600;">orange</span>, CC-JP; <span style="color:#2E7D32;font-weight:600;">green</span>, RSS).<br>
+            <strong>(d)</strong> Max braking deficit BD, box-and-whisker per FSM criticality tier (Easy / Medium / Hard); box spans the interquartile range, whiskers extend to the 5th–95th percentiles, points are outliers, and median is annotated. BD&nbsp;&gt;&nbsp;0 indicates that required stopping distance exceeded the available gap.<br>
+            <strong>(e)</strong> Adversary speed at collision, raincloud plot per FSM criticality tier (median annotated).<br>
+            <strong>(f)</strong> Longitudinal closing speed at collision, kernel-density estimate per criticality tier (median annotated).
           </p>
         </figure>
       </div>
@@ -531,7 +616,7 @@
   <div class="container">
     <h2 class="section-title">Main Results</h2>
     <p class="section-subtitle">
-      Benchmark comparison against existing generation methods, target-policy ablations, and unpreventable-mechanism analysis on the nuScenes validation split.
+      Benchmark comparison against existing adversarial generators and ADS-planner robustness tests on the nuScenes validation split.
     </p>
     <div class="divider"></div>
 
@@ -543,141 +628,101 @@
     <div class="columns is-centered">
       <div class="column is-12">
         <div class="results-table" style="overflow-x:auto;">
-          <table class="table is-fullwidth is-hoverable" style="font-size:0.88rem;">
+          <table class="table is-fullwidth is-hoverable" style="font-size:0.9rem;">
             <thead>
               <tr>
                 <th rowspan="2">Method</th>
-                <th colspan="3" style="border-right:1px solid rgba(255,255,255,0.2);">Responsibility Validity (%) ↑</th>
-                <th style="border-right:1px solid rgba(255,255,255,0.2);">Diversity</th>
-                <th colspan="3" style="border-right:1px solid rgba(255,255,255,0.2);">Kinematic Risk</th>
+                <th colspan="3" style="border-right:1px solid rgba(255,255,255,0.2);">Responsibility validity (%) ↑</th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);">Diversity ↑</th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);">Kinematic risk ↓</th>
                 <th>Feasibility ↓</th>
               </tr>
               <tr>
                 <th>FSM</th>
                 <th>CC-JP</th>
                 <th style="border-right:1px solid rgba(255,255,255,0.2);">RSS</th>
-                <th style="border-right:1px solid rgba(255,255,255,0.2);"><em>H</em><sub>crit</sub> ↑</th>
-                <th>TTC<sub>min</sub> (s)</th>
-                <th>BD<sup>+</sup>%</th>
-                <th style="border-right:1px solid rgba(255,255,255,0.2);"><em>v</em><sub>col</sub> (m/s)</th>
-                <th>infeas %</th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);"><em>H</em><sub>crit</sub></th>
+                <th style="border-right:1px solid rgba(255,255,255,0.2);">BD<sup>+</sup>%</th>
+                <th>IP%</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="model-ours">
-                <td class="model-name model-ours">CARS (Ours)</td>
-                <td class="best">97.5</td>
-                <td class="best">80.6</td>
-                <td class="best">96.6</td>
-                <td class="best">0.909</td>
-                <td>1.57</td>
-                <td>12.5</td>
-                <td>1.51</td>
-                <td class="best">0.00</td>
-              </tr>
-              <tr>
-                <td class="model-name">CARS w/o mix</td>
-                <td>83.9</td>
-                <td>38.7</td>
-                <td>72.6</td>
-                <td>0.292</td>
-                <td>1.29</td>
-                <td>59.7</td>
-                <td>3.17</td>
-                <td>0.00</td>
-              </tr>
-              <tr>
-                <td class="model-name">Bezier-CAT</td>
-                <td>65.7</td>
-                <td>36.6</td>
-                <td>10.6</td>
-                <td>0.012</td>
-                <td>0.54</td>
-                <td>31.2</td>
-                <td>3.81</td>
-                <td>37.73</td>
-              </tr>
+              <tr><td colspan="7" style="text-align:left !important;background:#f4f7fc;color:#666;font-style:italic;font-size:0.85rem;">Adversarial methods on nuScenes</td></tr>
               <tr>
                 <td class="model-name">STRIVE</td>
-                <td>31.2</td>
+                <td>7.3</td>
                 <td>5.8</td>
-                <td>9.9</td>
-                <td>0.128</td>
-                <td>0.21</td>
-                <td>33.7</td>
-                <td>1.12</td>
-                <td>25.95</td>
+                <td>6.1</td>
+                <td>0.528</td>
+                <td>53.8</td>
+                <td>36.39</td>
               </tr>
               <tr>
                 <td class="model-name">SafeSim</td>
-                <td>58.6</td>
                 <td>44.8</td>
-                <td>51.7</td>
-                <td>0.272</td>
-                <td>0.95</td>
-                <td>34.5</td>
-                <td>0.39</td>
-                <td>2.49</td>
+                <td>44.8</td>
+                <td>44.8</td>
+                <td>0.628</td>
+                <td>48.3</td>
+                <td>12.94</td>
+              </tr>
+              <tr>
+                <td class="model-name">Bezier-CAT</td>
+                <td>21.1</td>
+                <td>36.4</td>
+                <td>15.0</td>
+                <td>0.260</td>
+                <td>84.1</td>
+                <td>73.08</td>
+              </tr>
+              <tr>
+                <td class="model-name">CARS (<em>K</em>=1 <em>adv</em>)</td>
+                <td>45.2</td>
+                <td>35.5</td>
+                <td>53.2</td>
+                <td>0.797</td>
+                <td>66.1</td>
+                <td>27.40</td>
+              </tr>
+              <tr class="model-ours">
+                <td class="model-name model-ours"><strong>CARS (Ours)</strong></td>
+                <td class="best">88.7</td>
+                <td class="best">79.7</td>
+                <td class="best">97.1</td>
+                <td class="best">0.798</td>
+                <td class="best">22.5</td>
+                <td class="best">0.04</td>
+              </tr>
+              <tr><td colspan="7" style="text-align:left !important;background:#f4f7fc;color:#666;font-style:italic;font-size:0.85rem;">ADS-planner robustness (fixed CARS <em>adv</em>)</td></tr>
+              <tr>
+                <td class="model-name">One-component diffusion planner</td>
+                <td>87.8</td>
+                <td>80.0</td>
+                <td>96.7</td>
+                <td>0.834</td>
+                <td>21.7</td>
+                <td>0.04</td>
+              </tr>
+              <tr>
+                <td class="model-name">CTG planner</td>
+                <td>86.0</td>
+                <td>80.0</td>
+                <td>92.4</td>
+                <td>0.745</td>
+                <td>29.2</td>
+                <td>0.02</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p style="font-size:0.82rem;color:#888;margin-top:12px;text-align:center;">
-          Validity columns report the percentage of each method's real-collision scenarios classified as attributable to the target under the three reference models.
+          Validity columns report the percentage of each method's collision scenarios classified as attributable to the target under the three reference models.
           <em>H</em><sub>crit</sub> is the normalised Shannon entropy of the FSM Hard/Medium/Easy distribution (higher is more balanced).
-          infeas% is the scenario-averaged per-step violation rate of human-driver physical bounds (|<em>a</em>|&gt;8&nbsp;m/s², |jerk|&gt;50&nbsp;m/s³, |<em>a</em><sub>lat</sub>|&gt;8&nbsp;m/s²).
-          CARS is the only method that simultaneously achieves high attribution (<strong>97.5%</strong> FSM), balanced severity coverage (<em>H</em><sub>crit</sub>=<strong>0.909</strong>), and fully compliant adversary trajectories (infeas=<strong>0.00%</strong>).
-          Each baseline fails on a different axis: Bezier-CAT and STRIVE drive the adversary beyond physical limits; SafeSim concentrates severity onto the Hard tier; STRIVE also loses two-thirds of its collisions under FSM as unattributable.
-        </p>
-      </div>
-    </div>
-
-    <!-- ─── 2. Unpreventable Mechanisms ─── -->
-    <h3 style="text-align:center;font-size:1.25rem;font-weight:600;margin:56px 0 18px;color:#1a1a2e;">
-      Why are a minority of collisions unpreventable?
-    </h3>
-    <div class="columns is-centered">
-      <div class="column is-9">
-        <div class="results-table">
-          <table class="table is-fullwidth is-hoverable" style="font-size:0.9rem;">
-            <thead>
-              <tr>
-                <th>Mechanism</th>
-                <th>FSM (10)</th>
-                <th>CC-JP (79)</th>
-                <th>RSS (14)</th>
-                <th>Any (92)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="model-name">BD<sup>+</sup> during scenario</td>
-                <td>2 (20%)</td>
-                <td>67 (85%)</td>
-                <td>7 (50%)</td>
-                <td>70 (76%)</td>
-              </tr>
-              <tr>
-                <td class="model-name">CFS ≥ 0.9</td>
-                <td>5 (50%)</td>
-                <td>0 (0%)</td>
-                <td>0 (0%)</td>
-                <td>5 (5%)</td>
-              </tr>
-              <tr>
-                <td class="model-name">TTC &lt; 1 s</td>
-                <td>9 (90%)</td>
-                <td>73 (92%)</td>
-                <td>12 (86%)</td>
-                <td>86 (93%)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p style="font-size:0.82rem;color:#888;margin-top:12px;text-align:center;">
-          Trigger mechanisms for unpreventable cases on 408 nuScenes scenarios (multiple causes per scenario possible). Counts within each reference model's unpreventable set; "Any" is the union across the three reference models.
-          Most unpreventable cases arise from encounter-geometry limits (short TTC, physical braking deficit) rather than reference-model-specific artefacts,
-          confirming that the AD system under test should not be held at fault for them.
+          BD<sup>+</sup>% is the fraction of scenarios with a positive braking deficit during the encounter.
+          IP% is the scenario-averaged fraction of time steps exceeding any UN&nbsp;R157 feasibility bound (|<em>a</em>|&gt;7&nbsp;m/s², |jerk|&gt;12.65&nbsp;m/s³, |<em>a</em><sub>lat</sub>|&gt;3.0&nbsp;m/s²).
+          CARS simultaneously achieves the highest attribution (<strong>88.7%</strong> FSM), balanced severity coverage (<em>H</em><sub>crit</sub>=<strong>0.798</strong>), and near-zero kinematic infeasibility (IP=<strong>0.04%</strong>).
+          Each baseline fails on a different axis: Bezier-CAT and STRIVE drive the adversary beyond physical limits; SafeSim concentrates severity into a narrower tier band; STRIVE also loses most of its collisions under FSM as unattributable.
+          The ADS-planner rows fix the CARS adversary and only replace the target planner, showing that CARS does not depend on the planner architecture used during training.
         </p>
       </div>
     </div>
@@ -713,25 +758,25 @@
                 <td class="model-name model-ours">nuScenes <span style="background:#e3f0ff;color:#1565c0;border-radius:4px;padding:2px 6px;font-size:0.78rem;">Training</span></td>
                 <td>urban intersections</td>
                 <td>408</td>
-                <td class="best">97.5</td>
-                <td class="best">80.6</td>
-                <td class="best">96.6</td>
+                <td class="best">88.7</td>
+                <td class="best">79.7</td>
+                <td class="best">97.1</td>
               </tr>
               <tr>
                 <td class="model-name">AD4CHE</td>
                 <td>multi-lane highway</td>
                 <td>470</td>
-                <td>94.9</td>
-                <td>69.8</td>
-                <td>92.1</td>
+                <td>76.4</td>
+                <td>63.8</td>
+                <td>80.9</td>
               </tr>
               <tr>
                 <td class="model-name">RounD</td>
                 <td>four-arm roundabout</td>
                 <td>927</td>
-                <td>81.3</td>
-                <td>54.0</td>
-                <td>78.3</td>
+                <td>57.5</td>
+                <td>52.0</td>
+                <td>70.7</td>
               </tr>
             </tbody>
           </table>
@@ -749,21 +794,21 @@
         <div style="display:flex;gap:24px;flex-wrap:wrap;">
           <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#1a1a4e,#0f0c29);color:white;
                       border-radius:14px;padding:28px;text-align:center;">
-            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">398/408</div>
+            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">362/408</div>
             <div style="font-size:0.88rem;color:#e3ecff;margin-top:6px;">
               nuScenes collisions<br/>attributable to target
             </div>
           </div>
           <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#1a3a1a,#0c2010);color:white;
                       border-radius:14px;padding:28px;text-align:center;">
-            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">94.9%</div>
+            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">76.4%</div>
             <div style="font-size:0.88rem;color:#dcf0dc;margin-top:6px;">
               AD4CHE highway<br/>cross-dataset attribution
             </div>
           </div>
           <div style="flex:1;min-width:180px;background:linear-gradient(135deg,#3a1a00,#200c00);color:white;
                       border-radius:14px;padding:28px;text-align:center;">
-            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">81.3%</div>
+            <div style="font-size:2.6rem;font-weight:800;color:#ffffff;">57.5%</div>
             <div style="font-size:0.88rem;color:#ffe8c8;margin-top:6px;">
               RounD roundabout<br/>cross-dataset attribution
             </div>
