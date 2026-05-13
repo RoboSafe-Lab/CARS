@@ -256,7 +256,7 @@
       <a class="proj-btn btn-paper btn-disabled" href="#">
         <i class="fas fa-file-alt"></i> Paper
       </a>
-      <a class="proj-btn btn-code" href="https://github.com/RoboSafe-Lab/GMMPPO" target="_blank">
+      <a class="proj-btn btn-code" href="https://github.com/RoboSafe-Lab/CARS-code" target="_blank">
         <i class="fab fa-github"></i> Code
       </a>
       <a class="proj-btn btn-arxiv btn-disabled" href="#">
@@ -273,11 +273,11 @@
     <h2 class="section-title">Abstract</h2>
     <div class="divider"></div>
     <div class="abstract-box">
-      Validating autonomous driving systems (ADSs) requires testing their responses to rare, high-risk traffic interactions. Public-road testing cannot cover these long-tail events efficiently, making simulation-based adversarial scenario generation an important tool for safety evaluation.
+      Establishing trustworthy safety assurance for autonomous driving systems (ADSs) requires evidence that failures arise from avoidable system deficiencies rather than unavoidable traffic conflicts. Current adversarial simulation methods can efficiently expose collisions, but generally lack mechanisms to distinguish these fundamentally different failure modes.
       <br><br>
-      However, a generated collision is informative only if it exposes an avoidable failure of the ADS, rather than a crash that a careful and competent reference driver would also fail to avoid. Here we present <strong>CARS</strong> (<strong>C</strong>ontext-<strong>A</strong>ware, <strong>R</strong>esponsibility-attributed <strong>S</strong>cenario generation), a framework for generating adversarial scenarios with responsibility attribution as a generation objective. CARS combines context-aware adversary selection with a generative adversarial policy optimized in closed-loop simulation.
+      Here we present <strong>CARS</strong> (<strong>C</strong>ontext-<strong>A</strong>ware, <strong>R</strong>esponsibility-attributed <strong>S</strong>cenario generation), a framework that integrates responsibility attribution directly into adversarial scenario generation. CARS combines context-aware adversary selection with a generative adversarial policy optimized in closed-loop simulation to construct collision scenarios that are both physically feasible and diagnostically attributable.
       <br><br>
-      Across different road topologies, CARS consistently generates feasible collision scenarios with high attribution rates under multiple reference models. These results show that adversarial simulation can move beyond producing collisions toward constructing responsibility-attributed test evidence for ADS safety validation.
+      Across benchmark datasets spanning heterogeneous national traffic environments, CARS consistently discovers feasible collision scenarios with high attribution rates under multiple regulation-prescribed careful and competent driver models. By coupling adversarial generation with normative responsibility assessment, CARS moves simulation testing beyond collision discovery toward the construction of interpretable, regulation-aligned safety evidence for scalable ADS validation.
     </div>
   </div>
 </section>
