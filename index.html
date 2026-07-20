@@ -186,21 +186,6 @@
     .model-ours { color: #1a1a2e; }
     .model-ours td { background: #eef5ff; }
 
-    /* ── BibTeX ── */
-    .bibtex-box {
-      background: #0d0d1a; border-radius: 12px; padding: 24px 28px;
-      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
-      color: #aecbfa; line-height: 1.75; white-space: pre;
-      overflow-x: auto; position: relative;
-    }
-    .copy-btn {
-      position: absolute; top: 14px; right: 14px;
-      background: rgba(126,207,255,0.15); border: 1px solid rgba(126,207,255,0.3);
-      color: #7ecfff; border-radius: 6px; padding: 4px 12px;
-      font-size: 0.78rem; cursor: pointer; font-family: 'Inter', sans-serif;
-    }
-    .copy-btn:hover { background: rgba(126,207,255,0.3); }
-
     /* ── Footer ── */
     .site-footer {
       background: #0d0d1a; color: #7a8ba6;
@@ -790,29 +775,6 @@
 </section>
 
 
-<!-- ═══════════════════════════════════ BIBTEX ═════════════════════════════════ -->
-<section class="content-section">
-  <div class="container">
-    <h2 class="section-title">Citation</h2>
-    <div class="divider"></div>
-    <div class="columns is-centered">
-      <div class="column is-9">
-        <div class="bibtex-box" id="bibtex">
-<button class="copy-btn" onclick="copyBibtex()"><i class="fas fa-copy"></i> Copy</button>@article{anonymous2026cars,
-  title     = {Learning Responsibility-Attributed Adversarial Scenarios
-               for Testing Autonomous Vehicles},
-  author    = {Anonymous Authors},
-  journal   = {Under review},
-  year      = {2026},
-  url       = {https://arxiv.org/abs/2605.13751},
-  note      = {\url{https://github.com/RoboSafe-Lab/CARS-code.git}}
-}</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- ═══════════════════════════════════ FOOTER ═════════════════════════════════ -->
 <footer class="site-footer">
   <p>
@@ -827,16 +789,6 @@
 </footer>
 
 <script>
-  function copyBibtex() {
-    const box = document.getElementById('bibtex');
-    const text = box.innerText.replace('Copy', '').trim();
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = box.querySelector('.copy-btn');
-      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-      setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
-    });
-  }
-
   // 1. Pause 1s then replay; 2. Mobile WeChat fallback
   document.addEventListener('DOMContentLoaded', function() {
     var videos = document.querySelectorAll('video');
